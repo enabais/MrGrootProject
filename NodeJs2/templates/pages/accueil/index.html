@@ -19,7 +19,7 @@
 								<div class="list-group">
 									<img class="pull-left" ng-src="img/{{sensor.type}}.png"/>
 									<h2 ng-repeat="statement in storeCtrl.statements" class="pull-left" style="margin-left:20px;">
-										{{statement.value}} 
+										{{lastStat(sensor._id)}} 
 									</h2>
 								</div>
 							</div>
