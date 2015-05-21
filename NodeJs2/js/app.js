@@ -1,6 +1,4 @@
 var app = angular.module('myApp', ['ngRoute', 'ui.bootstrap', 'ui.jq', 'ui.load']);
-var mongoose = require('./moduleMongoose');
-
 app.constant('JQ_CONFIG', {
 	plot: ['vendors/jquery/charts/flot/jquery.flot.js',
 		'vendors/jquery/charts/flot/jquery.flot.tooltip.min.js',
