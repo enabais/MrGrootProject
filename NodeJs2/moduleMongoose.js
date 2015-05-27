@@ -844,7 +844,7 @@ var afficheBoucle = function(roomVar) {
 
 //Fonction pour chercher un releve
 var searchRoom = function(callback) {
-	var query = sensorModel.find({
+	var query = roomModel.find({
 	});
 	query.exec(function(err, rooms) {
 		if (err) {
