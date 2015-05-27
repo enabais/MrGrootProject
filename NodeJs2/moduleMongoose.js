@@ -748,6 +748,117 @@ var searchStatementid = function(varID, callback) {
 }
 
 
+//Fonction pour chercher un releve
+var searchSensors = function(roomVar, callback) {
+	var regVar = roomVar;
+	var query = sensorModel.find({
+		location: {
+			$regex: regVar,
+			$options: 'xi'
+		}
+	});
+	query.exec(function(err, relevs) {
+		if (err) {
+			throw err;
+		}
+		console.log('recup');
+		return callback(null, relevs);
+
+
+
+	});
+}
+
+//Fonction pour chercher un releve
+var addLast = function(roomVar, callback) {
+
+	searchSensors(roomVar, function(err, relevs) {
+
+		for (var i = 0, l = relevs.length; i < l; i++) {
+			relev = relevs[i];
+			console.log('------------------------------');
+			console.log('ID : ' + relev.sensor_id);
+			console.log('value : ' + relev.value);
+			console.log('Date : ' + relev.date);
+			console.log('------------------------------');
+			searchStatementid(relev.sensor_id, function(err, stat) {
+				relevs[i].lastStat = stat.value;
+			});
+		};
+
+		for (var i = 0, l = relevs.length; i < l; i++) {
+			relev = relevs[i];
+			console.log('------------------------------');
+			console.log('ID : ' + relev.sensor_id);
+			console.log('value : ' + relev.value);
+			console.log('Date : ' + relev.lastStat);
+			console.log('------------------------------');
+
+		};
+	});
+
+
+}
+
+//Fonction pour chercher un releve
+var boucle = function(roomVar, callback) {
+
+	searchSensors(roomVar, function(err, relevs) {
+		for (var i = 0, l = relevs.length; i < l; i++) {
+			relev = relevs[i];
+			console.log('------------------------------');
+			console.log('ID : ' + relev.sensor_id);
+			console.log('value : ' + relev.value);
+			console.log('Date : ' + relev.date);
+			console.log('------------------------------');
+			searchStatementid(relev.sensor_id, function(err, stat) {
+				relev.lastStat = stat.value;
+				console.log(stat)
+			});
+		};
+
+		return callback(null, relevs);
+
+	});
+
+
+}
+
+
+//Fonction pour chercher un releve
+var afficheBoucle = function(roomVar) {
+
+	boucle(roomVar, function(err, relevs) {
+		for (var i = 0, l = relevs.length; i < l; i++) {
+			relev = relevs[i];
+			console.log('------------------------------');
+			console.log('lastStat : ' + relev.lastStat);
+			console.log('------------------------------');
+		};
+
+
+	});
+
+
+}
+
+//Fonction pour chercher un releve
+var searchRoom = function(callback) {
+	var query = sensorModel.find({
+	});
+	query.exec(function(err, rooms) {
+		if (err) {
+			throw err;
+		}
+		console.log('recup');
+		return callback(null, rooms);
+
+
+
+	});
+}
+
+
 
 /*Exportation des fonctions*/
 exports.removeSensor = removeSensor;
@@ -772,3 +883,6 @@ exports.searchStatementid = searchStatementid;
 //exports.searchStatementId = searchStatementId;
 //exports.isThereAnAlert = isThereAnAlert;
 exports.isThisAnAlert = isThisAnAlert;
+exports.afficheBoucle = afficheBoucle;
+exports.boucle = boucle;
+exports.searchRoom = searchRoom;

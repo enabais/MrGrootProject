@@ -2,17 +2,25 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-
+var mongoose = require('./moduleMongoose');
 app.use(express.static(__dirname + '/'));
 
 io.on('connection', function(client) {
-	console.log('Client connected...');
+        console.log('Client connected...');
 });
 app.get('/trucs', function(req, res) {
-	mongoose.searchStatementid('temperature_3', function(err, state) {
-		res.json(state);
+        mongoose.searchStatementid('temperature_3', function(err, state) {
+console.log('dans mongoose mon gars');
+                res.json(state);
 
-	});
+        });
+});
+
+app.get('/room', function(req, res) {
+        mongoose.searchRoom(function(err, room){
+                res.json(room);
+        });
 });
 
 server.listen(8080);
+mongoose.connect();

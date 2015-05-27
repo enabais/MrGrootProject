@@ -34,7 +34,7 @@ app.config(['$routeProvider',
 app.factory("Room", function RoomFactory($http) {
 	return {
 		all: function() {
-			return $http.get('room.json')
+			return $http.get('/room')
 		},
 		create: function(value) {
 			return $http.post('room.json', value)
@@ -106,11 +106,11 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 			});
 
 		this.lastStat = function(sensorId) {
-			$http.get('/trucs').success(function(response) {
-				console.log("I got the data I requested from " + sensorId);
-				//this.sensor.statement = response.value;
-				return response;
-			});
+			//$http.get('/trucs').success(function(response) {
+			console.log("I got the data I requested from " + sensorId);
+			//this.sensor.statement = response.value;
+			//return response;
+			//});
 		}
 	}
 ]);
