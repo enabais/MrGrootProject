@@ -749,13 +749,10 @@ var searchStatementid = function(varID, callback) {
 
 
 //Fonction pour chercher un releve
-var searchSensors = function(roomVar, callback) {
-	var regVar = roomVar;
+var searchSensors = function(callback) {
+
 	var query = sensorModel.find({
-		location: {
-			$regex: regVar,
-			$options: 'xi'
-		}
+
 	});
 	query.exec(function(err, relevs) {
 		if (err) {
@@ -801,23 +798,23 @@ var addLast = function(roomVar, callback) {
 }
 
 //Fonction pour chercher un releve
-var boucle = function(roomVar, callback) {
+var listSensor = function(callback) {
 
-	searchSensors(roomVar, function(err, relevs) {
-		for (var i = 0, l = relevs.length; i < l; i++) {
-			relev = relevs[i];
+	searchSensors(function(err, sensors) {
+		for (var i = 0, l = sensors.length; i < l; i++) {
+			sensor = sensors[i];
 			console.log('------------------------------');
-			console.log('ID : ' + relev.sensor_id);
-			console.log('value : ' + relev.value);
-			console.log('Date : ' + relev.date);
+			console.log('ID : ' + sensor.location);
+			console.log('value : ' + sensor.name);
+			console.log('Date : ' + sensor.date);
 			console.log('------------------------------');
-			searchStatementid(relev.sensor_id, function(err, stat) {
-				relev.lastStat = stat.value;
+			searchStatementid(sensor._id, function(err, stat) {
+				sensor.lastStat = stat.value;
 				console.log(stat)
 			});
 		};
 
-		return callback(null, relevs);
+		return callback(null, sensors);
 
 	});
 
@@ -826,9 +823,9 @@ var boucle = function(roomVar, callback) {
 
 
 //Fonction pour chercher un releve
-var afficheBoucle = function(roomVar) {
+var affichelistSensor = function(roomVar) {
 
-	boucle(roomVar, function(err, relevs) {
+	listSensor(roomVar, function(err, relevs) {
 		for (var i = 0, l = relevs.length; i < l; i++) {
 			relev = relevs[i];
 			console.log('------------------------------');
@@ -883,6 +880,6 @@ exports.searchStatementid = searchStatementid;
 //exports.searchStatementId = searchStatementId;
 //exports.isThereAnAlert = isThereAnAlert;
 exports.isThisAnAlert = isThisAnAlert;
-exports.afficheBoucle = afficheBoucle;
-exports.boucle = boucle;
+exports.affichelistSensor = affichelistSensor;
+exports.listSensor = listSensor;
 exports.searchRoom = searchRoom;
