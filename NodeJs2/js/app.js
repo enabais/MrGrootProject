@@ -46,7 +46,7 @@ app.factory("Room", function RoomFactory($http) {
 app.factory("Sensor", function SensorFactory($http) {
 	return {
 		all: function() {
-			return $http.get('sensor.json')
+			return $http.get('/sensor')
 		},
 		create: function(value) {
 			return $http.post('sensor.json', value)

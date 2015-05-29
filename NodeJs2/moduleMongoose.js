@@ -512,6 +512,30 @@ var showCU = function() {
 }
 
 
+//Fonction pour afficher une room
+var showRoom = function() {
+	var query = roomModel.find();
+	query.exec(function(err, Rooms) {
+		if (err) {
+			throw err;
+		}
+		//Parcours des resultats et affichage
+		var Room;
+		for (var i = 0, l = Rooms.length; i < l; i++) {
+			Room = Rooms[i];
+			console.log('------------------------------');
+			console.log('ID : ' + Room._id);
+			console.log('CC_ID : ' + Room.CC_id);
+			console.log('Nom : ' + Room.name);
+			console.log('Description : ' + Room.description);
+			console.log('Valeur : ' + Room.val);
+			console.log('Reference Room : ' + Room.ref);
+			console.log('------------------------------');
+		}
+	})
+}
+
+
 
 //Fonction pour chercher un releve
 var searchStatementId = function(label, node) {
@@ -868,6 +892,8 @@ exports.showStatement = showStatement;
 exports.showSensor = showSensor;
 exports.showCC = showCC;
 exports.showCU = showCU;
+exports.showRoom = showRoom;
+
 exports.removeStatement = removeStatement;
 exports.removeRoom = removeRoom;
 exports.removeCU = removeCU;
