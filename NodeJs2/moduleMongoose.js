@@ -16,13 +16,11 @@ var connect = function() {
 //Definition des 2 schemas capteurs et releve
 
 var roomSchema = new mongoose.Schema({
-	_id: String,
 	name: {
 		type: String,
 		match: /^[a-zA-Z0-9-_]+$/
 	},
 	description: String,
-	location: String,
 	sensor: [],
 	date: {
 		type: Date,
@@ -150,14 +148,12 @@ var disconnect = function() {
 
 
 //Fonction pour ajouter une nouvelle piece
-var addRoom = function(idRoom, nameRoom, descriptionRoom, locationRoom) {
+var addRoom = function(nameRoom, descriptionRoom) {
 	// On crée une instance du Model
 	var myRoom = new roomModel({
-		_id: idRoom
 	});
 	myRoom.name = nameRoom;
 	myRoom.description = descriptionRoom;
-	myRoom.location = locationRoom;
 
 	// On le sauvegarde dans MongoDB !
 	myRoom.save(function(err) {
@@ -515,21 +511,20 @@ var showCU = function() {
 //Fonction pour afficher une room
 var showRoom = function() {
 	var query = roomModel.find();
-	query.exec(function(err, Rooms) {
+	query.exec(function(err, rooms) {
 		if (err) {
 			throw err;
 		}
 		//Parcours des resultats et affichage
-		var Room;
-		for (var i = 0, l = Rooms.length; i < l; i++) {
-			Room = Rooms[i];
+		var room;
+		for (var i = 0, l = rooms.length; i < l; i++) {
+			room = rooms[i];
 			console.log('------------------------------');
-			console.log('ID : ' + Room._id);
-			console.log('CC_ID : ' + Room.CC_id);
-			console.log('Nom : ' + Room.name);
-			console.log('Description : ' + Room.description);
-			console.log('Valeur : ' + Room.val);
-			console.log('Reference Room : ' + Room.ref);
+			console.log('ID : ' + room._id);
+			console.log('Nom : ' + room.name);
+			console.log('Description : ' + room.description);
+			console.log('Date : ' + room.date);
+			console.log('Liste sensors : ' + room.sensor);
 			console.log('------------------------------');
 		}
 	})

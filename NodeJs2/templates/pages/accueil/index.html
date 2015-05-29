@@ -4,10 +4,10 @@
 		<accordion-group ng-repeat="room in storeCtrl.rooms" is-open="room.status.open">
 			<accordion-heading>
 				<i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': room.status.open, 'glyphicon-chevron-right': !room.status.open}">&nbsp;</i>
-				{{room.location}}
+				{{room.name}}
 			</accordion-heading>
 			<div ng-repeat="sensor in storeCtrl.sensors">
-				<div ng-if="sensor.location == room.location">
+				<div ng-if="sensor.location == room.name">
 					<div class="list-group pull-left">
 						<div class="panel panel-default" style="margin-left:10px;">
 							<div class="panel-heading">
