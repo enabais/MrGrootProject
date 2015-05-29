@@ -1,5 +1,6 @@
 // Inclusion de Mongoose
 var mongoose = require('mongoose');
+var async = require('async');
 
 
 var connect = function() {
@@ -787,56 +788,89 @@ var searchSensors = function(callback) {
 //Fonction pour chercher un releve
 var addLast = function(roomVar, callback) {
 
-	searchSensors(roomVar, function(err, relevs) {
+		searchSensors(roomVar, function(err, relevs) {
 
-		for (var i = 0, l = relevs.length; i < l; i++) {
-			relev = relevs[i];
-			console.log('------------------------------');
-			console.log('ID : ' + relev.sensor_id);
-			console.log('value : ' + relev.value);
-			console.log('Date : ' + relev.date);
-			console.log('------------------------------');
-			searchStatementid(relev.sensor_id, function(err, stat) {
-				relevs[i].lastStat = stat.value;
-			});
-		};
+			for (var i = 0, l = relevs.length; i < l; i++) {
+				relev = relevs[i];
+				console.log('------------------------------');
+				console.log('ID : ' + relev.sensor_id);
+				console.log('value : ' + relev.value);
+				console.log('Date : ' + relev.date);
+				console.log('------------------------------');
+				searchStatementid(relev.sensor_id, function(err, stat) {
+					relevs[i].lastStat = stat.value;
+				});
+			};
 
-		for (var i = 0, l = relevs.length; i < l; i++) {
-			relev = relevs[i];
-			console.log('------------------------------');
-			console.log('ID : ' + relev.sensor_id);
-			console.log('value : ' + relev.value);
-			console.log('Date : ' + relev.lastStat);
-			console.log('------------------------------');
+			for (var i = 0, l = relevs.length; i < l; i++) {
+				relev = relevs[i];
+				console.log('------------------------------');
+				console.log('ID : ' + relev.sensor_id);
+				console.log('value : ' + relev.value);
+				console.log('Date : ' + relev.lastStat);
+				console.log('------------------------------');
 
-		};
-	});
+			};
+		});
 
 
-}
+	}
+	/*
+	//Fonction pour chercher un releve
+	var listSensor = function(callback) {
+
+		searchSensors(function(err, sensors) {
+			for (var i = 0, l = sensors.length; i < l; i++) {
+				sensor = sensors[i];
+				console.log('------------------------------');
+				console.log('ID : ' + sensor.location);
+				console.log('value : ' + sensor.name);
+				console.log('Date : ' + sensor.date);
+				console.log('------------------------------');
+				searchStatementid(sensor._id, function(err, stat) {
+					sensor.lastStat = stat.value;
+					console.log(sensor.lastStat)
+				});
+			};
+			console.log(sensors[0].lastStat);
+			if (sensors.length == i) {
+				return callback(null, sensors);
+			};
+		});
+
+	}
+	*/
+
 
 //Fonction pour chercher un releve
 var listSensor = function(callback) {
-
+	var results = {};
 	searchSensors(function(err, sensors) {
-		for (var i = 0, l = sensors.length; i < l; i++) {
-			sensor = sensors[i];
+		async.forEachOf(sensors, function(sensor, key, cb) {
 			console.log('------------------------------');
 			console.log('ID : ' + sensor.location);
 			console.log('value : ' + sensor.name);
 			console.log('Date : ' + sensor.date);
 			console.log('------------------------------');
 			searchStatementid(sensor._id, function(err, stat) {
-				sensor.lastStat = stat.value;
-				console.log(sensor.lastStat)
+				if (err) return cb(err);
+				sensor.description = stat.value;
+				console.log('laststat is ' + sensor.description);
+				results[key] = sensor;
+				console.log('affichage de result' + results[key].description);
+				return cb();
 			});
-		};
-		console.log(sensors[0].lastStat);
-
-	return callback(null, sensors);
+		}, function(err) {
+			if (err) {
+				console.error(err.message)
+				return callback(err);
+			}
+			console.log('avant callbak ' + results[0].description);
+			return callback(null, results);
+		});
 	});
-
 }
+
 
 
 //Fonction pour chercher un releve

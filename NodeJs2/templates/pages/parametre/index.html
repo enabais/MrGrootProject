@@ -13,20 +13,6 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="inputType" class="col-sm-2 control-label">Capteur associé</label>
-				<div class="col-xs-6 col-md-5">
-					<select ng-model="roomCtrl.room.sensors" class="form-control" id="inputType" required>
-						<option ng-repeat="sensor in storeCtrl.sensors">{{sensor.name}}</option>
-					</select>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="inputLocation" class="col-sm-2 control-label">Localisation</label>
-				<div class="col-xs-6 col-md-5">
-					<input ng-model="roomCtrl.room.location" type="text" class="form-control" id="inputLocation" placeholder="Lieu de la salle" required>
-				</div>
-			</div>
-			<div class="form-group">
 				<label for="inputDescription" class="col-sm-2 control-label">Description</label>
 				<div class="col-xs-6 col-md-5">
 					<textarea ng-model="roomCtrl.room.description" class="form-control" rows="3" id="inputDescription"></textarea>
@@ -36,6 +22,31 @@
 				<div class="col-sm-offset-2 col-sm-10">
 					<button type="submit" class="btn btn-default">Ajouter</button>
 					<button type="reset" class="btn btn-default">Annuler</button>
+				</div>
+			</div>
+		</form>
+	</fieldset>
+	<fieldset>
+		<legend>Associer un Capteur à une Salle</legend>
+		<form name="associateRoomForm" class="form-horizontal" ng-controller="RoomController as roomCtrl" ng-submit="associateRoomForm.$valid" novalidate>			
+			<div class="form-group">
+				<label for="inputType" class="col-sm-2 control-label">Capteur :</label>
+				<div class="col-xs-6 col-sm-3">
+					<select ng-model="roomCtrl.room.sensor" class="form-control" id="inputType" required>
+						<option ng-repeat="sensor in storeCtrl.sensors">{{sensor.name}}</option>
+					</select>
+				</div>
+				<label for="inputType" class="col-sm-2 control-label">associé à la salle :</label>
+				<div class="col-xs-6 col-sm-3">
+					<select ng-model="roomCtrl.room.room" class="form-control" id="inputType" required>
+						<option ng-repeat="room in storeCtrl.rooms">{{room.name}}</option>
+					</select>
+				</div>
+			</div>
+				
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-default">Associer</button>
 				</div>
 			</div>
 		</form>
