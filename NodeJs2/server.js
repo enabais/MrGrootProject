@@ -22,5 +22,11 @@ app.get('/room', function(req, res) {
         });
 });
 
+app.get('/sensor', function(req, res) {
+        mongoose.listSensor(function(err, sensors){
+                res.json(sensors);
+        });
+});
+
 server.listen(8080);
 mongoose.connect();
