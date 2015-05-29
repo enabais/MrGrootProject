@@ -150,8 +150,7 @@ var disconnect = function() {
 //Fonction pour ajouter une nouvelle piece
 var addRoom = function(nameRoom, descriptionRoom) {
 	// On crée une instance du Model
-	var myRoom = new roomModel({
-	});
+	var myRoom = new roomModel({});
 	myRoom.name = nameRoom;
 	myRoom.description = descriptionRoom;
 
@@ -235,14 +234,14 @@ var addCC = function(idCC, nameCC, descriptionCC) {
 
 
 //Fonction pour ajouter un nouveau capteur
-var addSensor = function(label, nodeIDSensor, nameSensor, descriptionSensor, typeSensor, locationSensor) {
+var addSensor = function(label, nodeIDSensor, nameSensor, descriptionSensor, locationSensor) {
 	// On crée une instance du Model
 	var mySensor = new sensorModel({
 		_id: label + '_' + nodeIDSensor
 	});
 	mySensor.name = nameSensor;
 	mySensor.description = descriptionSensor;
-	mySensor.type = typeSensor;
+	mySensor.type = label;
 	mySensor.location = locationSensor;
 
 	/*
@@ -829,14 +828,14 @@ var listSensor = function(callback) {
 			console.log('------------------------------');
 			searchStatementid(sensor._id, function(err, stat) {
 				sensor.lastStat = stat.value;
-				console.log(stat)
+				console.log(sensor.lastStat)
 			});
 		};
+		console.log(sensors[0].lastStat);
 
-		return callback(null, sensors);
 
 	});
-
+	return callback(null, sensors);
 
 }
 
@@ -860,8 +859,7 @@ var affichelistSensor = function(roomVar) {
 
 //Fonction pour chercher un releve
 var searchRoom = function(callback) {
-	var query = roomModel.find({
-	});
+	var query = roomModel.find({});
 	query.exec(function(err, rooms) {
 		if (err) {
 			throw err;
