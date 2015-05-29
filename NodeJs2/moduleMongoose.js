@@ -833,9 +833,8 @@ var listSensor = function(callback) {
 		};
 		console.log(sensors[0].lastStat);
 
-
-	});
 	return callback(null, sensors);
+	});
 
 }
 
