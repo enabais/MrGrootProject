@@ -907,6 +907,51 @@ var searchRoom = function(callback) {
 
 
 
+//Fonction pour ajouter un nouveau capteur
+var association = function(idRoom, idSensor) {
+	// On crée une instance du Model
+	var mySensor = new sensorModel({
+		_id: idSensor
+	});
+
+	var querySensor = sensorModel.findOne({
+		_id: idSensor
+	});
+	querySensor.exec(function(err, mySensor) {
+		if (err) {
+			throw err;
+		}
+	});
+
+
+
+	var queryRoom = roomModel.findOne({
+		_id: idRoom
+	});
+	queryRoom.exec(function(err, myRoom) {
+		if (err) {
+			throw err;
+		}
+		mySensor.location = myRoom.name;
+		myRoom.sensor.push(idSensor);
+		myRoom.save(function(err) {
+			if (err) {
+				throw err;
+			}
+		});
+	});
+
+	// On le sauvegarde dans MongoDB !
+	mySensor.save(function(err) {
+		if (err) {
+			throw err;
+		}
+		console.log('Capteur ajouté avec succès !');
+	});
+
+
+}
+
 /*Exportation des fonctions*/
 exports.removeSensor = removeSensor;
 exports.addSensor = addSensor;
@@ -935,3 +980,5 @@ exports.isThisAnAlert = isThisAnAlert;
 exports.affichelistSensor = affichelistSensor;
 exports.listSensor = listSensor;
 exports.searchRoom = searchRoom;
+
+exports.association = association;
