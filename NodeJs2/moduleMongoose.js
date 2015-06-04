@@ -963,31 +963,30 @@ var association = function(idRoom, idSensor) {
 		}
 
 
-	});
 
-
-	var query = roomModel.findOne({
-		_id: label + '_' + nodeIDRoom
-	});
-	query.exec(function(err, myRoom) {
-		if (err) {
-			throw err;
-		}
-
-		myRoom.sensor.push(mySensor._id);
-		myRoom.save(function(err) {
-			if (err) {
-				throw err;
-			}
-
+		var query = roomModel.findOne({
+			_id: label + '_' + nodeIDRoom
 		});
-		
-		// On le sauvegarde dans MongoDB !
-		mySensor.save(function(err) {
+		query.exec(function(err, myRoom) {
 			if (err) {
 				throw err;
 			}
-			console.log('association réalisé avec succès !');
+
+			myRoom.sensor.push(mySensor._id);
+			myRoom.save(function(err) {
+				if (err) {
+					throw err;
+				}
+
+			});
+
+			// On le sauvegarde dans MongoDB !
+			mySensor.save(function(err) {
+				if (err) {
+					throw err;
+				}
+				console.log('association réalisé avec succès !');
+			});
 		});
 	});
 }
