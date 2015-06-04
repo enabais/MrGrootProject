@@ -906,7 +906,7 @@ var searchRoom = function(callback) {
 }
 
 
-
+/*
 //Fonction pour ajouter un nouveau capteur
 var association = function(idRoom, idSensor) {
 
@@ -917,7 +917,7 @@ var association = function(idRoom, idSensor) {
 	queryRoom.exec(function(err, myRoom) {
 		if (err) {
 			throw err;
-		}		
+		}
 		console.log(myRoom.name);
 
 
@@ -930,24 +930,66 @@ var association = function(idRoom, idSensor) {
 				throw err;
 			}
 			mySensor.location = myRoom.name;
-
+			myRoom.sensor.push(idSensor);
 			mySensor.save(function(err) {
 				if (err) {
 					throw err;
 				}
-				myRoom.sensor.push(idSensor);
+				myRoom.save(function(err) {
+					if (err) {
+						throw err;
+					}
+					console.log('Capteur ajouté avec succès !');
+				});
+
 			});
 		});
 
 		// On le sauvegarde dans MongoDB !
+
+	});
+
+}*/
+
+//Fonction pour ajouter un nouveau releve
+var association = function(idRoom, idSensor) {
+	// On crée une instance du Model
+	var querySensor = sensorModel.findOne({
+		_id: idSensor
+	});
+	querySensor.exec(function(err, mySensor) {
+		if (err) {
+			throw err;
+		}
+
+
+	});
+
+
+	var query = roomModel.findOne({
+		_id: label + '_' + nodeIDRoom
+	});
+	query.exec(function(err, myRoom) {
+		if (err) {
+			throw err;
+		}
+
+		myRoom.sensor.push(mySensor._id);
 		myRoom.save(function(err) {
 			if (err) {
 				throw err;
 			}
-			console.log('Capteur ajouté avec succès !');
+
+		});
+		
+		// On le sauvegarde dans MongoDB !
+		mySensor.save(function(err) {
+			if (err) {
+				throw err;
+			}
+			console.log('association réalisé avec succès !');
 		});
 	});
-
 }
 
 /*Exportation des fonctions*/
