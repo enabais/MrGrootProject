@@ -965,7 +965,7 @@ var association = function(idRoom, idSensor) {
 
 
 		var query = roomModel.findOne({
-			_id: label + '_' + nodeIDRoom
+			_id: idRoom
 		});
 		query.exec(function(err, myRoom) {
 			if (err) {
