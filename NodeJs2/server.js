@@ -29,7 +29,8 @@ app.get('/sensor', function(req, res) {
 });
 
 app.post('/associate', function(req, res) {
-        mongoose.association(req.idRoom, req.idSensor);
+        //mongoose.association(req.idRoom, req.idSensor);
+        mongoose.showSensor();
 });
 
 server.listen(8080);
