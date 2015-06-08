@@ -3,18 +3,10 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var mongoose = require('./moduleMongoose');
+var bodyParser = require('body-parser');
+
 app.use(express.static(__dirname + '/'));
-
-io.on('connection', function(client) {
-        console.log('Client connected...');
-});
-app.get('/trucs', function(req, res) {
-        mongoose.searchStatementid('temperature_3', function(err, state) {
-                console.log('dans mongoose mon gars');
-                res.json(state);
-
-        });
-});
+app.use(bodyParser.json());
 
 app.get('/room', function(req, res) {
         mongoose.searchRoom(function(err, room) {
@@ -29,8 +21,7 @@ app.get('/sensor', function(req, res) {
 });
 
 app.post('/associate', function(req, res) {
-        //mongoose.association(req.idRoom, req.idSensor);
-        mongoose.showSensor();
+        mongoose.association(req.body.idRoom, req.body.idSensor);
 });
 
 server.listen(8080);
