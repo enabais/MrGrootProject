@@ -28,18 +28,18 @@
 	</fieldset>
 	<fieldset>
 		<legend>Associer un Capteur à une Salle</legend>
-		<form name="associateRoomForm" class="form-horizontal" ng-controller="RoomController as roomCtrl" ng-submit="associateRoomForm.$valid" novalidate>			
+		<form name="associateRoomForm" class="form-horizontal" ng-controller="AssociateController as associateCtrl" ng-submit="associateRoomForm.$valid && associateCtrl.associateSensor()" novalidate>			
 			<div class="form-group">
 				<label for="inputType" class="col-sm-2 control-label">Capteur :</label>
 				<div class="col-xs-6 col-sm-3">
-					<select ng-model="roomCtrl.room.sensor" class="form-control" id="inputType" required>
-						<option ng-repeat="sensor in storeCtrl.sensors">{{sensor.name}}</option>
+					<select ng-model="associateCtrl.sensor" class="form-control" id="inputType" required>
+						<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
 					</select>
 				</div>
 				<label for="inputType" class="col-sm-2 control-label">associé à la salle :</label>
 				<div class="col-xs-6 col-sm-3">
-					<select ng-model="roomCtrl.room.room" class="form-control" id="inputType" required>
-						<option ng-repeat="room in storeCtrl.rooms">{{room.name}}</option>
+					<select ng-model="associateCtrl.room" class="form-control" id="inputType" required>
+						<option ng-repeat="room in storeCtrl.rooms" value="{{room._id}}">{{room.name}}</option>
 					</select>
 				</div>
 			</div>

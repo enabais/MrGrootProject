@@ -9,8 +9,8 @@ app.constant('JQ_CONFIG', {
 app.config(['$routeProvider',
 	function($routeProvider) {
 		$routeProvider.when('#/accueil', {
-				templateUrl: 'templates/pages/accueil/index.html',
-			})
+			templateUrl: 'templates/pages/accueil/index.html',
+		})
 			.when('/releves', {
 				templateUrl: 'templates/pages/releves/index.html',
 			})
@@ -20,8 +20,8 @@ app.config(['$routeProvider',
 		})
 
 		.when('/parametre', {
-				templateUrl: 'templates/pages/parametre/index.html',
-			})
+			templateUrl: 'templates/pages/parametre/index.html',
+		})
 			.when('/', {
 				templateUrl: 'templates/pages/accueil/index.html',
 			})
@@ -104,14 +104,6 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 				store.statements = data;
 				console.log("success!");
 			});
-
-		this.lastStat = function(sensorId) {
-			//$http.get('/trucs').success(function(response) {
-			console.log("I got the data I requested from " + sensorId);
-			//this.sensor.statement = response.value;
-			//return response;
-			//});
-		}
 	}
 ]);
 
@@ -161,6 +153,22 @@ app.controller("RoomController", ['Room',
 				.success(function() {
 					console.log("success!");
 				});
+		};
+	}
+]);
+
+app.controller("AssociateController", ['$http',
+	function($http) {
+		var value = {};
+		this.associateSensor = function() {
+			value = {
+				idSensor : this.sensor, idRoom : this.room
+			};
+			$http.post('/associate', value)
+				.success(function() {
+					console.log("success associate : " + value.idSensor + ", " + value.idRoom);
+				});
+
 		};
 	}
 ]);

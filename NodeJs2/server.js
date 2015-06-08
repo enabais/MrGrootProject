@@ -10,22 +10,26 @@ io.on('connection', function(client) {
 });
 app.get('/trucs', function(req, res) {
         mongoose.searchStatementid('temperature_3', function(err, state) {
-console.log('dans mongoose mon gars');
+                console.log('dans mongoose mon gars');
                 res.json(state);
 
         });
 });
 
 app.get('/room', function(req, res) {
-        mongoose.searchRoom(function(err, room){
+        mongoose.searchRoom(function(err, room) {
                 res.json(room);
         });
 });
 
 app.get('/sensor', function(req, res) {
-        mongoose.listSensor(function(err, sensors){
+        mongoose.listSensor(function(err, sensors) {
                 res.json(sensors);
         });
+});
+
+app.post('/associate', function(req, res) {
+        mongoose.association(req.idRoom, req.idSensor);
 });
 
 server.listen(8080);
