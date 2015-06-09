@@ -55,6 +55,30 @@ app.factory("Sensor", function SensorFactory($http) {
 
 });
 
+app.factory("Statement", function StatementFactory($http) {
+	var factory = {
+		all: function() {
+			return $http.get('statement.json')
+		},
+		get: function(id) {
+			var stat = {};
+			var all = factory.all();
+			angular.forEach(all, function(value, key) {
+				if (value.id == id) {
+					stat = value;
+				}
+			});
+			return stat;
+		},
+		create: function(value) {
+			return $http.post('statement.json', value)
+		}
+	}
+
+	return factory;
+
+});
+
 
 app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 	function($http, Room, Sensor, Statement) {
