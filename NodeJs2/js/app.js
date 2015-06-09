@@ -55,30 +55,6 @@ app.factory("Sensor", function SensorFactory($http) {
 
 });
 
-app.factory("Statement", function StatementFactory($http) {
-	var factory = {
-		all: function() {
-			return $http.get('statement.json')
-		},
-		get: function(id) {
-			var stat = {};
-			var all = factory.all();
-			angular.forEach(all, function(value, key) {
-				if (value.id == id) {
-					stat = value;
-				}
-			});
-			return stat;
-		},
-		create: function(value) {
-			return $http.post('statement.json', value)
-		}
-	}
-
-	return factory;
-
-});
-
 
 app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 	function($http, Room, Sensor, Statement) {
@@ -135,15 +111,15 @@ app.controller('AccordionDemoCtrl', function() {
 
 });
 
-app.controller("RoomController", ['$http', "Room",
-	function($http, Room) {
+app.controller("RoomController", ['$http',
+	function($http) {
 		var value = {};
 		this.addRoom = function() {
 			value = {
 				name: this.name,
 				description: this.description
 			};
-			Room.create()
+			$http.post('/room', value)
 				.success(function() {
 					console.log("success add room : " + value.name + ", " + value.description);
 				});
