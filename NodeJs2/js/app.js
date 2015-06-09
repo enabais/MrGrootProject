@@ -145,6 +145,7 @@ app.controller("RoomController", ['$http',
 			};
 			$http.post('/room', value)
 				.success(function() {
+					$http.get('/room');
 					console.log("success add room : " + value.name + ", " + value.description);
 				});
 		};
