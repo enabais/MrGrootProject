@@ -36,8 +36,8 @@ app.factory("Room", function RoomFactory($http) {
 		all: function() {
 			return $http.get('/room')
 		},
-		create: function(value) {
-			return $http.post('room.json', value)
+		create: function() {
+			return $http.post('/room', value)
 		}
 	}
 
@@ -135,23 +135,17 @@ app.controller('AccordionDemoCtrl', function() {
 
 });
 
-app.controller("RoomController", ['Room',
-	function(Room) {
-		this.addRoom = function(room) {
-			/*myJson = fs.readFile("room.json"); //On lit le fichier existant
-			//On prend les nouvelles valeurs
-			var value = angular.toJson(room);
-			console.log(value);
-			console.log(myJson);
-			myJson.push(value); // on les ajoute au valeurs éxistante à la suite
-			fs.writeFile("room.json", JSON.stringify(myJson), "utf8");*/
-
-
-			var value = angular.toJson(room);
-			console.log(value);
-			Room.create(room)
+app.controller("RoomController", ['$http', "Room",
+	function($http, Room) {
+		var value = {};
+		this.addRoom = function() {
+			value = {
+				name: this.name,
+				description: this.description
+			};
+			Room.create()
 				.success(function() {
-					console.log("success!");
+					console.log("success add room : " + value.name + ", " + value.description);
 				});
 		};
 	}
@@ -162,7 +156,8 @@ app.controller("AssociateController", ['$http',
 		var value = {};
 		this.associateSensor = function() {
 			value = {
-				idSensor : this.sensor, idRoom : this.room
+				idSensor: this.sensor,
+				idRoom: this.room
 			};
 			$http.post('/associate', value)
 				.success(function() {

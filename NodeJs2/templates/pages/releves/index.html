@@ -2,7 +2,19 @@
 	<h3><strong>Relevés</strong></h3>
 	<div ng-controller="FlotChartDemoCtrl">
 		<div class="panel panel-default">
-			<div class="panel-heading font-bold">Courbes journalières, hebdomadaires et mensuelles </div>
+			<div class="panel-heading font-bold">
+				<form name="statementForm" class="form-horizontal">
+					<div class="form-group">
+						
+						<div class="col-xs-9 col-sm-5">
+							<label for="inputType" class="control-label">Selectionner un capteur : </label>
+							<select ng-model="FlotChartDemoCtrl.sensor" class="form-control" id="inputType">
+								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
+							</select>
+						</div>
+					</div>
+				</form>
+			</div>
 			<div class="panel-body">
 				<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
 					<li ng-class="{'active': selected == 'day'}">

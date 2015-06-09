@@ -20,6 +20,10 @@ app.get('/sensor', function(req, res) {
         });
 });
 
+app.post('/room', function(req, res) {
+        mongoose.addRoom(req.body.name, req.body.description);
+});
+
 app.post('/associate', function(req, res) {
         mongoose.association(req.body.idRoom, req.body.idSensor);
 });
