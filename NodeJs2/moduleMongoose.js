@@ -992,12 +992,13 @@ var association = function(idRoom, idSensor) {
 }
 
 /*Exportation des fonctions*/
-exports.removeSensor = removeSensor;
+
 exports.addSensor = addSensor;
 exports.addStatement = addStatement;
 exports.addRoom = addRoom;
 exports.addCU = addCU;
 exports.addCC = addCC;
+
 exports.showStatement = showStatement;
 exports.showSensor = showSensor;
 exports.showCC = showCC;
@@ -1008,9 +1009,11 @@ exports.removeStatement = removeStatement;
 exports.removeRoom = removeRoom;
 exports.removeCU = removeCU;
 exports.removeCC = removeCC;
+exports.removeSensor = removeSensor;
 
 exports.disconnect = disconnect;
 exports.connect = connect;
+
 exports.searchCCid = searchCCid;
 exports.searchStatementid = searchStatementid;
 //exports.searchStatementId = searchStatementId;
