@@ -166,5 +166,3 @@
   var removeStatement = function() {
   mongoose.removeStatement();
   }
-
-  
