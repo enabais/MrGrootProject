@@ -27,15 +27,15 @@
 		<legend>Associer un Capteur à une Salle</legend>
 		<form name="associateRoomForm" class="form-horizontal" ng-controller="AssociateController as associateCtrl" ng-submit="associateRoomForm.$valid && associateCtrl.associateSensor()" novalidate>
 			<div class="form-group">
-				<label for="inputType" class="col-sm-2 control-label">Capteur :</label>
+				<label for="inputSensor" class="col-sm-2 control-label">Capteur :</label>
 				<div class="col-xs-6 col-sm-3">
-					<select ng-model="associateCtrl.sensor" class="form-control" id="inputType" required>
+					<select ng-model="associateCtrl.sensor" class="form-control" id="inputSensor" required>
 						<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
 					</select>
 				</div>
-				<label for="inputType" class="col-sm-2 control-label">associé à la salle :</label>
+				<label for="inputRoom" class="col-sm-2 control-label">associé à la salle :</label>
 				<div class="col-xs-6 col-sm-3">
-					<select ng-model="associateCtrl.room" class="form-control" id="inputType" required>
+					<select ng-model="associateCtrl.room" class="form-control" id="inputRoom" required>
 						<option ng-repeat="room in storeCtrl.rooms" value="{{room._id}}">{{room.name}}</option>
 					</select>
 				</div>

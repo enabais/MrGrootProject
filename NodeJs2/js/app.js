@@ -117,12 +117,12 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 					store.rooms = data;
 					console.log("success!");
 				});
-			value = {};
+			name = "";
+			description = "";
 		};
 
 		this.deleteRoom = function(idRoom) {
 			var value = {};
-			console.log(idRoom);
 			value = {
 				id: idRoom
 			};
@@ -132,7 +132,6 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 					store.rooms = data;
 					console.log("success!");
 				});
-			value = {};
 		};
 	}
 ]);
@@ -165,7 +164,7 @@ app.controller('AccordionDemoCtrl', function() {
 
 });
 
-app.controller("RoomController", ['$http', 'Room',
+/*app.controller("RoomController", ['$http', 'Room',
 	function($http, Room) {
 		var store = this;
 		store.rooms = [];
@@ -183,7 +182,7 @@ app.controller("RoomController", ['$http', 'Room',
 				});
 		};
 	}
-]);
+]);*/
 
 app.controller("AssociateController", ['$http',
 	function($http) {
