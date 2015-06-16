@@ -150,18 +150,20 @@ app.controller('AccordionDemoCtrl', function() {
 
 });
 
-app.controller("RoomController", ['$http',
-	function($http) {
+app.controller("RoomController", ['$http', 'Room',
+	function($http, Room) {
 		var value = {};
 		this.addRoom = function() {
 			value = {
 				name: this.name,
 				description: this.description
 			};
-			$http.post('/room', value)
-				.success(function() {
-					console.log("success add room : " + value.name + ", " + value.description);
-				});
+			$http.post('/room', value);
+			Room.all()
+			.success(function(data) {
+				store.rooms = data;
+				console.log("success!");
+			});
 		};
 	}
 ]);
