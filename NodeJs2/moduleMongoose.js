@@ -730,7 +730,7 @@ var searchCCid = function(varID) {
 
 }
 
-var showStatementByDay = function(varSensor) {
+var showStatementByDay = function(varSensor, callback) {
 	var query = statementModel.find({ sensor_id: varSensor});
 	query.exec(function(err, relevs) {
 		if (err) {
@@ -746,6 +746,7 @@ var showStatementByDay = function(varSensor) {
 			console.log('Date : ' + relev.date);
 			console.log('------------------------------');
 		}
+				return callback(null, relevs);
 	});
 }
 
