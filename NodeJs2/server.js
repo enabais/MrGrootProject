@@ -29,7 +29,7 @@ app.post('/associate', function(req, res) {
 });
 
 app.post('/deleteRoom', function(req, res) {
-        mongoose.deleteRoom(req.body);
+        mongoose.deleteRoom(req.body.id);
 });
 
 server.listen(8080);

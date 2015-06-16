@@ -106,8 +106,12 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 			});
 
 		this.deleteRoom = function(idRoom){
+			var value = {};
 			console.log(idRoom);
-			$http.post('/deleteRoom', idRoom);
+			value = {
+				id : idRoom
+			};
+			$http.post('/deleteRoom', value);
 			Room.all()
 			.success(function(data) {
 				store.rooms = data;
