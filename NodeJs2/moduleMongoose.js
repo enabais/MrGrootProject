@@ -870,10 +870,12 @@ var listSensor = function(callback) {
 			console.log('------------------------------');
 			searchStatementid(sensor._id, function(err, stat) {
 				if (err) return cb(err);
+				if(stat!=null){
 				sensor.description = stat.value;
 				console.log('laststat is ' + sensor.description);
 				results[key] = sensor;
 				console.log('affichage de result' + results[key].description);
+			}
 				return cb();
 			});
 		}, function(err) {
