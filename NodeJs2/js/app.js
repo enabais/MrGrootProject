@@ -104,7 +104,7 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 				store.statements = data;
 				console.log("success!");
 			});
-			
+
 		this.addRoom = function() {
 			var value = {};
 			value = {
@@ -117,6 +117,7 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 					store.rooms = data;
 					console.log("success!");
 				});
+			value = {};
 		};
 
 		this.deleteRoom = function(idRoom) {
@@ -131,7 +132,7 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 					store.rooms = data;
 					console.log("success!");
 				});
-
+			value = {};
 		};
 	}
 ]);
