@@ -152,6 +152,8 @@ app.controller('AccordionDemoCtrl', function() {
 
 app.controller("RoomController", ['$http', 'Room',
 	function($http, Room) {
+		var store = this;
+		store.rooms = [];
 		var value = {};
 		this.addRoom = function() {
 			value = {
