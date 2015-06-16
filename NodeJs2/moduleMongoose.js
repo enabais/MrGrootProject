@@ -405,6 +405,17 @@ var removeRoom = function() {
 	});
 }
 
+//Fonction pour supprimer une room
+var deleteRoom = function(idRoom) {
+	roomModel.remove({_id:idRoom}, function(err) {
+		if (err) {
+			throw err;
+		}
+		console.log('Room supprimés !');
+	});
+}
+
+
 //Fonction pour afficher un capteur
 var showSensor = function() {
 	var query = sensorModel.find();
