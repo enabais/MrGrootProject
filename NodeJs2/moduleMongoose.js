@@ -407,7 +407,9 @@ var removeRoom = function() {
 
 //Fonction pour supprimer une room
 var deleteRoom = function(idRoom) {
-	roomModel.remove({_id:idRoom}, function(err) {
+	roomModel.remove({
+		_id: idRoom
+	}, function(err) {
 		if (err) {
 			throw err;
 		}
@@ -764,13 +766,16 @@ var searchStatementid = function(varID, callback) {
 			'date': -1
 		}
 	}, function(err, State) {
+		if (State != null) {
 
-		console.log('------------------------------')
-		console.log('ID : ' + State.sensor_id);
-		console.log('value : ' + State.value);
-		console.log('Nom : ' + State.date);
-		console.log('------------------------------');
+			console.log('------------------------------')
+			console.log('ID : ' + State.sensor_id);
+			console.log('value : ' + State.value);
+			console.log('Nom : ' + State.date);
+			console.log('------------------------------');
+		}
 		return callback(null, State);
+
 	})
 
 
