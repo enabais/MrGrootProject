@@ -730,6 +730,28 @@ var searchCCid = function(varID) {
 
 }
 
+var showStatementByDay = function(varDay, varSensor) {
+	var query = statementModel.find({date.getDay: varDay, sensor_id: varSensor});
+	query.exec(function(err, relevs) {
+		if (err) {
+			throw err;
+		}
+		// On va parcourir le résultat et les afficher joliment
+		var relev;
+		for (var i = 0, l = relevs.length; i < l; i++) {
+			relev = relevs[i];
+			console.log('------------------------------');
+			console.log('ID : ' + relev.sensor_id);
+			console.log('value : ' + relev.value);
+			console.log('Date : ' + relev.date);
+			console.log('------------------------------');
+		}
+	});
+}
+
+
+
+
 //Fonction pour chercher un releve
 var searchStatementid = function(varID, callback) {
 	/*var query = statementModel.find({
@@ -1043,3 +1065,4 @@ exports.searchRoom = searchRoom;
 
 exports.association = association;
 exports.deleteRoom = deleteRoom;
+exports.showStatementByDay = showStatementByDay;
