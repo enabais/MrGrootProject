@@ -28,5 +28,9 @@ app.post('/associate', function(req, res) {
         mongoose.association(req.body.idRoom, req.body.idSensor);
 });
 
+app.post('/deleteRoom', function(req, res) {
+        mongoose.deleteRoom(req.body);
+});
+
 server.listen(8080);
 mongoose.connect();

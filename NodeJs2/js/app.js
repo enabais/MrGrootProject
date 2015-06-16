@@ -104,6 +104,17 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 				store.statements = data;
 				console.log("success!");
 			});
+
+		this.deleteRoom = function(idRoom){
+			console.log(idRoom);
+			$http.post('/deleteRoom', idRoom);
+			Room.all()
+			.success(function(data) {
+				store.rooms = data;
+				console.log("success!");
+			});
+
+		};
 	}
 ]);
 
@@ -145,7 +156,6 @@ app.controller("RoomController", ['$http',
 			};
 			$http.post('/room', value)
 				.success(function() {
-					$http.get('/room');
 					console.log("success add room : " + value.name + ", " + value.description);
 				});
 		};
