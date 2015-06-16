@@ -1042,3 +1042,4 @@ exports.listSensor = listSensor;
 exports.searchRoom = searchRoom;
 
 exports.association = association;
+exports.deleteRoom = deleteRoom;
