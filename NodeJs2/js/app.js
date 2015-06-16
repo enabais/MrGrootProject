@@ -104,19 +104,33 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 				store.statements = data;
 				console.log("success!");
 			});
+			
+		this.addRoom = function() {
+			var value = {};
+			value = {
+				name: this.name,
+				description: this.description
+			};
+			$http.post('/room', value);
+			Room.all()
+				.success(function(data) {
+					store.rooms = data;
+					console.log("success!");
+				});
+		};
 
-		this.deleteRoom = function(idRoom){
+		this.deleteRoom = function(idRoom) {
 			var value = {};
 			console.log(idRoom);
 			value = {
-				id : idRoom
+				id: idRoom
 			};
 			$http.post('/deleteRoom', value);
 			Room.all()
-			.success(function(data) {
-				store.rooms = data;
-				console.log("success!");
-			});
+				.success(function(data) {
+					store.rooms = data;
+					console.log("success!");
+				});
 
 		};
 	}
@@ -162,10 +176,10 @@ app.controller("RoomController", ['$http', 'Room',
 			};
 			$http.post('/room', value);
 			Room.all()
-			.success(function(data) {
-				store.rooms = data;
-				console.log("success!");
-			});
+				.success(function(data) {
+					store.rooms = data;
+					console.log("success!");
+				});
 		};
 	}
 ]);

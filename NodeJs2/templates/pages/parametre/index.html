@@ -2,17 +2,17 @@
 	<h3><strong>Paramètres</strong></h3>
 	<fieldset>
 		<legend>Ajout Salle</legend>
-		<form name="addRoomForm" class="form-horizontal" ng-controller="RoomController as roomCtrl" ng-submit="addRoomForm.$valid && roomCtrl.addRoom()" novalidate>
+		<form name="addRoomForm" class="form-horizontal" ng-submit="addRoomForm.$valid && storeCtrl.addRoom()" novalidate>
 			<div class="form-group">
 				<label for="inputName" class="col-sm-2 control-label">Nom</label>
 				<div class="col-xs-6 col-md-5">
-					<input ng-model="roomCtrl.name" type="text" class="form-control" id="inputName" placeholder="Nom de la salle" required>
+					<input ng-model="storeCtrl.name" type="text" class="form-control" id="inputName" placeholder="Nom de la salle" required>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="inputDescription" class="col-sm-2 control-label">Description</label>
 				<div class="col-xs-6 col-md-5">
-					<textarea ng-model="roomCtrl.description" class="form-control" rows="3" id="inputDescription"></textarea>
+					<textarea ng-model="storeCtrl.description" class="form-control" rows="3" id="inputDescription"></textarea>
 				</div>
 			</div>
 			<div class="form-group">
