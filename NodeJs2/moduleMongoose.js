@@ -730,8 +730,8 @@ var searchCCid = function(varID) {
 
 }
 
-var showStatementByDay = function(varDay, varSensor) {
-	var query = statementModel.find({date.getDay: varDay, sensor_id: varSensor});
+var showStatementByDay = function(varSensor) {
+	var query = statementModel.find({ sensor_id: varSensor});
 	query.exec(function(err, relevs) {
 		if (err) {
 			throw err;
@@ -905,7 +905,6 @@ var listSensor = function(callback) {
 				console.error(err.message)
 				return callback(err);
 			}
-			console.log('avant callbak ' + results[0].description);
 			return callback(null, results);
 		});
 	});
@@ -1019,6 +1018,7 @@ var association = function(idRoom, idSensor) {
 				}
 
 			});
+			mySensor.location = myRoom.name;
 
 			// On le sauvegarde dans MongoDB !
 			mySensor.save(function(err) {
