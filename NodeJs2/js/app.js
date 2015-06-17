@@ -80,8 +80,8 @@ app.factory("Statement", function StatementFactory($http) {
 });
 
 
-app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
-	function($http, Room, Sensor, Statement) {
+app.controller('StoreController', ['$http','$window', 'Room', 'Sensor', 'Statement',
+	function($http, $window, Room, Sensor, Statement) {
 		var store = this;
 		store.rooms = [];
 		store.sensors = [];
@@ -112,11 +112,7 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 				description: this.description
 			};
 			$http.post('/room', value);
-			Room.all()
-				.success(function(data) {
-					store.rooms = data;
-					console.log("success!");
-				});
+			$window.location.reload();
 		};
 
 		this.deleteRoom = function(idRoom) {
@@ -125,11 +121,7 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 				id: idRoom
 			};
 			$http.post('/deleteRoom', value);
-			Room.all()
-				.success(function(data) {
-					store.rooms = data;
-					console.log("success!");
-				});
+			$window.location.reload();
 		};
 	}
 ]);
@@ -182,8 +174,8 @@ app.controller('AccordionDemoCtrl', function() {
 	}
 ]);*/
 
-app.controller("AssociateController", ['$http','$route',
-	function($http, $route) {
+app.controller("AssociateController", ['$http','$window',
+	function($http, $window) {
 
 		this.associateSensor = function() {
 			var value = {};
@@ -192,7 +184,7 @@ app.controller("AssociateController", ['$http','$route',
 				idRoom: this.room
 			};
 			$http.post('/associate', value);		
-			$route.reload();
+			$window.location.reload();
 		};
 	}
 ]);
