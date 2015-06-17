@@ -117,8 +117,6 @@ app.controller('StoreController', ['$http', 'Room', 'Sensor', 'Statement',
 					store.rooms = data;
 					console.log("success!");
 				});
-			name = "";
-			description = "";
 		};
 
 		this.deleteRoom = function(idRoom) {
@@ -184,19 +182,17 @@ app.controller('AccordionDemoCtrl', function() {
 	}
 ]);*/
 
-app.controller("AssociateController", ['$http',
-	function($http) {
-		var value = {};
+app.controller("AssociateController", ['$http','$route',
+	function($http, $route) {
+
 		this.associateSensor = function() {
+			var value = {};
 			value = {
 				idSensor: this.sensor,
 				idRoom: this.room
 			};
-			$http.post('/associate', value)
-				.success(function() {
-					console.log("success associate : " + value.idSensor + ", " + value.idRoom);
-				});
-
+			$http.post('/associate', value);		
+			$route.reload();
 		};
 	}
 ]);
