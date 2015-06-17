@@ -244,6 +244,14 @@ app.controller('FlotChartDemoCtrl', ['$scope',
 
 		$scope.d = $scope.d0;
 
+		$scope.sendSensor = function() {
+			var value = {};
+			value = {
+				id: $scope.idSensor
+			};
+			$http.post('/idstatement', value);
+		};
+
 		$scope.refreshData = function(value) {
 			if (value === 'month') {
 				$scope.d = $scope.d0_2;
