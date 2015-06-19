@@ -711,37 +711,37 @@ var searchCCid = function(varID) {
 }
 
 var showStatementBySensor = function(varSensor, callback) {
-		var query = statementModel.find({
-			sensor_id: varSensor
-		});
-		query.exec(function(err, relevs) {
-				if (err) {
-					throw err;
-				}
-				// On va parcourir le résultat et les afficher joliment
-				var relev;
-				for (var i = 0, l = relevs.length; i < l; i++) {
-					relev = relevs[i];
-					console.log('------------------------------');
-					console.log('ID : ' + relev.sensor_id);
-					console.log('value : ' + relev.value);
-					console.log('Date : ' + relev.date);
-					console.log('------------------------------');
-
-					console.log(relev.date.getHours() + relev.date.getMin()
-
-
-
-					}
-					return callback(null, relevs);
-				});
+	var query = statementModel.find({
+		sensor_id: varSensor
+	});
+	query.exec(function(err, relevs) {
+		if (err) {
+			throw err;
 		}
+		// On va parcourir le résultat et les afficher joliment
+		var relev;
+		for (var i = 0, l = relevs.length; i < l; i++) {
+			relev = relevs[i];
+			console.log('------------------------------');
+			console.log('ID : ' + relev.sensor_id);
+			console.log('value : ' + relev.value);
+			console.log('Date : ' + relev.date);
+			console.log('------------------------------');
+
+			console.log(relev.date.getHours() + relev.date.getMin());
 
 
 
-		//Fonction pour chercher un releve
-		var searchStatementid = function(varID, callback) {
-			/*var query = statementModel.find({
+		}
+		return callback(null, relevs);
+	});
+}
+
+
+
+//Fonction pour chercher un releve
+var searchStatementid = function(varID, callback) {
+	/*var query = statementModel.find({
 		sensor_id: varID
 
 	});
@@ -768,288 +768,288 @@ var showStatementBySensor = function(varSensor, callback) {
 
 
 
-			statementModel.findOne({
-				sensor_id: varID
-			}, {}, {
-				sort: {
-					'date': -1
-				}
-			}, function(err, State) {
-				if (State != null) {
-
-					console.log('------------------------------')
-					console.log('ID : ' + State.sensor_id);
-					console.log('value : ' + State.value);
-					console.log('Nom : ' + State.date);
-					console.log('------------------------------');
-				}
-				return callback(null, State);
-
-			})
-
-
-
+	statementModel.findOne({
+		sensor_id: varID
+	}, {}, {
+		sort: {
+			'date': -1
 		}
+	}, function(err, State) {
+		if (State != null) {
 
-
-		//Fonction pour chercher un releve
-		var searchSensors = function(callback) {
-
-			var query = sensorModel.find({
-
-			});
-			query.exec(function(err, relevs) {
-				if (err) {
-					throw err;
-				}
-				console.log('recup');
-				return callback(null, relevs);
-
-
-
-			});
+			console.log('------------------------------')
+			console.log('ID : ' + State.sensor_id);
+			console.log('value : ' + State.value);
+			console.log('Nom : ' + State.date);
+			console.log('------------------------------');
 		}
+		return callback(null, State);
 
-		//Fonction pour chercher un releve
-		var addLast = function(roomVar, callback) {
+	})
 
-				searchSensors(roomVar, function(err, relevs) {
 
-					for (var i = 0, l = relevs.length; i < l; i++) {
-						relev = relevs[i];
-						console.log('------------------------------');
-						console.log('ID : ' + relev.sensor_id);
-						console.log('value : ' + relev.value);
-						console.log('Date : ' + relev.date);
-						console.log('------------------------------');
-						searchStatementid(relev.sensor_id, function(err, stat) {
-							relevs[i].lastStat = stat.value;
-						});
-					};
 
-					for (var i = 0, l = relevs.length; i < l; i++) {
-						relev = relevs[i];
-						console.log('------------------------------');
-						console.log('ID : ' + relev.sensor_id);
-						console.log('value : ' + relev.value);
-						console.log('Date : ' + relev.lastStat);
-						console.log('------------------------------');
+}
 
-					};
+
+//Fonction pour chercher un releve
+var searchSensors = function(callback) {
+
+	var query = sensorModel.find({
+
+	});
+	query.exec(function(err, relevs) {
+		if (err) {
+			throw err;
+		}
+		console.log('recup');
+		return callback(null, relevs);
+
+
+
+	});
+}
+
+//Fonction pour chercher un releve
+var addLast = function(roomVar, callback) {
+
+		searchSensors(roomVar, function(err, relevs) {
+
+			for (var i = 0, l = relevs.length; i < l; i++) {
+				relev = relevs[i];
+				console.log('------------------------------');
+				console.log('ID : ' + relev.sensor_id);
+				console.log('value : ' + relev.value);
+				console.log('Date : ' + relev.date);
+				console.log('------------------------------');
+				searchStatementid(relev.sensor_id, function(err, stat) {
+					relevs[i].lastStat = stat.value;
 				});
+			};
+
+			for (var i = 0, l = relevs.length; i < l; i++) {
+				relev = relevs[i];
+				console.log('------------------------------');
+				console.log('ID : ' + relev.sensor_id);
+				console.log('value : ' + relev.value);
+				console.log('Date : ' + relev.lastStat);
+				console.log('------------------------------');
+
+			};
+		});
 
 
+	}
+	/*
+	//Fonction pour chercher un releve
+	var listSensor = function(callback) {
+
+		searchSensors(function(err, sensors) {
+			for (var i = 0, l = sensors.length; i < l; i++) {
+				sensor = sensors[i];
+				console.log('------------------------------');
+				console.log('ID : ' + sensor.location);
+				console.log('value : ' + sensor.name);
+				console.log('Date : ' + sensor.date);
+				console.log('------------------------------');
+				searchStatementid(sensor._id, function(err, stat) {
+					sensor.lastStat = stat.value;
+					console.log(sensor.lastStat)
+				});
+			};
+			console.log(sensors[0].lastStat);
+			if (sensors.length == i) {
+				return callback(null, sensors);
+			};
+		});
+
+	}
+	*/
+
+
+//Fonction pour chercher un releve
+var listSensor = function(callback) {
+	var results = {};
+	searchSensors(function(err, sensors) {
+		async.forEachOf(sensors, function(sensor, key, cb) {
+			console.log('------------------------------');
+			console.log('ID : ' + sensor.location);
+			console.log('value : ' + sensor.name);
+			console.log('Date : ' + sensor.date);
+			console.log('------------------------------');
+			searchStatementid(sensor._id, function(err, stat) {
+				if (err) return cb(err);
+				if (stat != null) {
+					sensor.description = stat.value;
+					console.log('laststat is ' + sensor.description);
+					results[key] = sensor;
+					console.log('affichage de result' + results[key].description);
+				}
+				return cb();
+			});
+		}, function(err) {
+			if (err) {
+				console.error(err.message)
+				return callback(err);
 			}
-			/*
-			//Fonction pour chercher un releve
-			var listSensor = function(callback) {
+			return callback(null, results);
+		});
+	});
+}
 
-				searchSensors(function(err, sensors) {
-					for (var i = 0, l = sensors.length; i < l; i++) {
-						sensor = sensors[i];
-						console.log('------------------------------');
-						console.log('ID : ' + sensor.location);
-						console.log('value : ' + sensor.name);
-						console.log('Date : ' + sensor.date);
-						console.log('------------------------------');
-						searchStatementid(sensor._id, function(err, stat) {
-							sensor.lastStat = stat.value;
-							console.log(sensor.lastStat)
-						});
-					};
-					console.log(sensors[0].lastStat);
-					if (sensors.length == i) {
-						return callback(null, sensors);
-					};
-				});
 
+
+//Fonction pour chercher un releve
+var affichelistSensor = function(roomVar) {
+
+	listSensor(roomVar, function(err, relevs) {
+		for (var i = 0, l = relevs.length; i < l; i++) {
+			relev = relevs[i];
+			console.log('------------------------------');
+			console.log('lastStat : ' + relev.lastStat);
+			console.log('------------------------------');
+		};
+
+
+	});
+
+
+}
+
+//Fonction pour chercher un releve
+var searchRoom = function(callback) {
+	var query = roomModel.find({});
+	query.exec(function(err, rooms) {
+		if (err) {
+			throw err;
+		}
+		console.log('recup');
+		return callback(null, rooms);
+
+
+
+	});
+}
+
+
+/*
+//Fonction pour ajouter un nouveau capteur
+var association = function(idRoom, idSensor) {
+
+
+	var queryRoom = roomModel.findOne({
+		_id: idRoom
+	});
+	queryRoom.exec(function(err, myRoom) {
+		if (err) {
+			throw err;
+		}
+		console.log(myRoom.name);
+
+
+
+		var querySensor = sensorModel.findOne({
+			_id: idSensor
+		});
+		querySensor.exec(function(err, myRoom) {
+			if (err) {
+				throw err;
 			}
-			*/
-
-
-		//Fonction pour chercher un releve
-		var listSensor = function(callback) {
-			var results = {};
-			searchSensors(function(err, sensors) {
-				async.forEachOf(sensors, function(sensor, key, cb) {
-					console.log('------------------------------');
-					console.log('ID : ' + sensor.location);
-					console.log('value : ' + sensor.name);
-					console.log('Date : ' + sensor.date);
-					console.log('------------------------------');
-					searchStatementid(sensor._id, function(err, stat) {
-						if (err) return cb(err);
-						if (stat != null) {
-							sensor.description = stat.value;
-							console.log('laststat is ' + sensor.description);
-							results[key] = sensor;
-							console.log('affichage de result' + results[key].description);
-						}
-						return cb();
-					});
-				}, function(err) {
-					if (err) {
-						console.error(err.message)
-						return callback(err);
-					}
-					return callback(null, results);
-				});
-			});
-		}
-
-
-
-		//Fonction pour chercher un releve
-		var affichelistSensor = function(roomVar) {
-
-			listSensor(roomVar, function(err, relevs) {
-				for (var i = 0, l = relevs.length; i < l; i++) {
-					relev = relevs[i];
-					console.log('------------------------------');
-					console.log('lastStat : ' + relev.lastStat);
-					console.log('------------------------------');
-				};
-
-
-			});
-
-
-		}
-
-		//Fonction pour chercher un releve
-		var searchRoom = function(callback) {
-			var query = roomModel.find({});
-			query.exec(function(err, rooms) {
+			mySensor.location = myRoom.name;
+			myRoom.sensor.push(idSensor);
+			mySensor.save(function(err) {
 				if (err) {
 					throw err;
 				}
-				console.log('recup');
-				return callback(null, rooms);
-
-
-
-			});
-		}
-
-
-		/*
-		//Fonction pour ajouter un nouveau capteur
-		var association = function(idRoom, idSensor) {
-
-
-			var queryRoom = roomModel.findOne({
-				_id: idRoom
-			});
-			queryRoom.exec(function(err, myRoom) {
-				if (err) {
-					throw err;
-				}
-				console.log(myRoom.name);
-
-
-
-				var querySensor = sensorModel.findOne({
-					_id: idSensor
-				});
-				querySensor.exec(function(err, myRoom) {
+				myRoom.save(function(err) {
 					if (err) {
 						throw err;
 					}
-					mySensor.location = myRoom.name;
-					myRoom.sensor.push(idSensor);
-					mySensor.save(function(err) {
-						if (err) {
-							throw err;
-						}
-						myRoom.save(function(err) {
-							if (err) {
-								throw err;
-							}
-							console.log('Capteur ajouté avec succès !');
-						});
-
-					});
+					console.log('Capteur ajouté avec succès !');
 				});
 
-				// On le sauvegarde dans MongoDB !
-
 			});
+		});
 
-		}*/
+		// On le sauvegarde dans MongoDB !
 
-		//Fonction pour ajouter un nouveau releve
-		var association = function(idRoom, idSensor) {
-			// On crée une instance du Model
-			var querySensor = sensorModel.findOne({
-				_id: idSensor
-			});
-			querySensor.exec(function(err, mySensor) {
+	});
+
+}*/
+
+//Fonction pour ajouter un nouveau releve
+var association = function(idRoom, idSensor) {
+	// On crée une instance du Model
+	var querySensor = sensorModel.findOne({
+		_id: idSensor
+	});
+	querySensor.exec(function(err, mySensor) {
+		if (err) {
+			throw err;
+		}
+
+
+
+		var query = roomModel.findOne({
+			_id: idRoom
+		});
+		query.exec(function(err, myRoom) {
+			if (err) {
+				throw err;
+			}
+
+			myRoom.sensor.push(mySensor._id);
+			myRoom.save(function(err) {
 				if (err) {
 					throw err;
 				}
 
-
-
-				var query = roomModel.findOne({
-					_id: idRoom
-				});
-				query.exec(function(err, myRoom) {
-					if (err) {
-						throw err;
-					}
-
-					myRoom.sensor.push(mySensor._id);
-					myRoom.save(function(err) {
-						if (err) {
-							throw err;
-						}
-
-					});
-					mySensor.location = myRoom.name;
-
-					// On le sauvegarde dans MongoDB !
-					mySensor.save(function(err) {
-						if (err) {
-							throw err;
-						}
-						console.log('association réalisé avec succès !');
-					});
-				});
 			});
-		}
+			mySensor.location = myRoom.name;
 
-		/*Exportation des fonctions*/
+			// On le sauvegarde dans MongoDB !
+			mySensor.save(function(err) {
+				if (err) {
+					throw err;
+				}
+				console.log('association réalisé avec succès !');
+			});
+		});
+	});
+}
 
-		exports.addSensor = addSensor;
-		exports.addStatement = addStatement;
-		exports.addRoom = addRoom;
-		exports.addCU = addCU;
-		exports.addCC = addCC;
+/*Exportation des fonctions*/
 
-		exports.showStatement = showStatement;
-		exports.showSensor = showSensor;
-		exports.showCC = showCC;
-		exports.showCU = showCU;
-		exports.showRoom = showRoom;
+exports.addSensor = addSensor;
+exports.addStatement = addStatement;
+exports.addRoom = addRoom;
+exports.addCU = addCU;
+exports.addCC = addCC;
 
-		exports.removeStatement = removeStatement;
-		exports.removeRoom = removeRoom;
-		exports.removeCU = removeCU;
-		exports.removeCC = removeCC;
-		exports.removeSensor = removeSensor;
+exports.showStatement = showStatement;
+exports.showSensor = showSensor;
+exports.showCC = showCC;
+exports.showCU = showCU;
+exports.showRoom = showRoom;
 
-		exports.disconnect = disconnect;
-		exports.connect = connect;
+exports.removeStatement = removeStatement;
+exports.removeRoom = removeRoom;
+exports.removeCU = removeCU;
+exports.removeCC = removeCC;
+exports.removeSensor = removeSensor;
 
-		exports.searchCCid = searchCCid;
-		exports.searchStatementid = searchStatementid;
-		//exports.searchStatementId = searchStatementId;
-		//exports.isThereAnAlert = isThereAnAlert;
-		exports.isThisAnAlert = isThisAnAlert;
-		exports.affichelistSensor = affichelistSensor;
-		exports.listSensor = listSensor;
-		exports.searchRoom = searchRoom;
+exports.disconnect = disconnect;
+exports.connect = connect;
 
-		exports.association = association;
-		exports.deleteRoom = deleteRoom;
-		exports.showStatementBySensor = showStatementBySensor;
+exports.searchCCid = searchCCid;
+exports.searchStatementid = searchStatementid;
+//exports.searchStatementId = searchStatementId;
+//exports.isThereAnAlert = isThereAnAlert;
+exports.isThisAnAlert = isThisAnAlert;
+exports.affichelistSensor = affichelistSensor;
+exports.listSensor = listSensor;
+exports.searchRoom = searchRoom;
+
+exports.association = association;
+exports.deleteRoom = deleteRoom;
+exports.showStatementBySensor = showStatementBySensor;
