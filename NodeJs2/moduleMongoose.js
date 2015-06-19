@@ -578,7 +578,7 @@ var isThereAnAlert = function(sensorID) {
 
 
 
-	var regVar = statement.sensor_id
+	var regVar = sensorID
 	var query = CUModel.find({ //vérifier les duplicata des CC
 		ref: {
 			$regex: regVar,
@@ -601,23 +601,7 @@ var isThereAnAlert = function(sensorID) {
 			console.log('value : ' + relev.val);
 			console.log('------------------------------');
 
-			//Là je fait appel à la fonction en envoyant le CC déclencheur
-			var searchVar = CU.CC_id
-			var query2 = CCModel.findOne({
-				_id: {
-					$regex: searchVar,
-					$options: 'xi'
-				}
-			});
-
-
-
-			query2.exec(function(err, CC) {
-				if (err) {
-					throw err;
-				}
-				console.log('------------------------------');
-				isThisAnAlert(CC);
+				searchCCid(CU._id);
 
 
 
