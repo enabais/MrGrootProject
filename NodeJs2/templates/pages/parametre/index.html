@@ -3,15 +3,15 @@
 	<fieldset>
 		<legend>Ajout Salle</legend>
 		<form name="addRoomForm" class="form-horizontal" ng-submit="addRoomForm.$valid && storeCtrl.addRoom()" novalidate>
-			<div class="form-group">
-				<label for="inputName" class="col-sm-2 control-label">Nom</label>
+			<div class="form-group">				
 				<div class="col-xs-6 col-md-5">
+					<label for="inputName" class="control-label">Nom:</label>
 					<input ng-model="storeCtrl.name" type="text" class="form-control" id="inputName" placeholder="Nom de la salle" required>
 				</div>
 			</div>
-			<div class="form-group">
-				<label for="inputDescription" class="col-sm-2 control-label">Description</label>
+			<div class="form-group">				
 				<div class="col-xs-6 col-md-5">
+					<label for="inputDescription" class="control-label">Description:</label>
 					<textarea ng-model="storeCtrl.description" class="form-control" rows="3" id="inputDescription"></textarea>
 				</div>
 			</div>
@@ -26,21 +26,20 @@
 	<fieldset>
 		<legend>Associer un Capteur à une Salle</legend>
 		<form name="associateRoomForm" class="form-horizontal" ng-controller="AssociateController as associateCtrl" ng-submit="associateRoomForm.$valid && associateCtrl.associateSensor()" novalidate>
-			<div class="form-group">
-				<label for="inputSensor" class="col-sm-2 control-label">Capteur :</label>
+			<div class="form-group">				
 				<div class="col-xs-6 col-sm-3">
+					<label for="inputSensor" class="control-label">Capteur:</label>
 					<select ng-model="associateCtrl.sensor" class="form-control" id="inputSensor" required>
 						<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
 					</select>
-				</div>
-				<label for="inputRoom" class="col-sm-2 control-label">associé à la salle :</label>
+				</div>				
 				<div class="col-xs-6 col-sm-3">
+					<label for="inputRoom" class="control-label">associé à la salle:</label>
 					<select ng-model="associateCtrl.room" class="form-control" id="inputRoom" required>
 						<option ng-repeat="room in storeCtrl.rooms" value="{{room._id}}">{{room.name}}</option>
 					</select>
 				</div>
-			</div>
-			
+			</div>			
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button type="submit" class="btn btn-default">Associer</button>

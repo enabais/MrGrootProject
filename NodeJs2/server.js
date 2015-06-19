@@ -32,5 +32,9 @@ app.post('/deleteRoom', function(req, res) {
         mongoose.deleteRoom(req.body.id);
 });
 
+app.post('/sensorStatement', function(req, res) {
+        mongoose.searchStatementid(req.body.id);
+});
+
 server.listen(8080);
 mongoose.connect();

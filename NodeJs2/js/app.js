@@ -237,7 +237,7 @@ app.controller('FlotChartDemoCtrl', ['$scope',
 			value = {
 				id: $scope.idSensor
 			};
-			$http.post('/idstatement', value);
+			$http.post('/sensorStatement', value);
 		};
 
 		$scope.refreshData = function(value) {
