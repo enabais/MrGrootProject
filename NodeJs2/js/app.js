@@ -254,7 +254,7 @@ app.controller('FlotChartDemoCtrl', ['$scope',
 			}*/
 			$scope.axisAbs = "[ 0, '0h' ], [ 1, '1h' ], [ 2, '2h' ], [ 3, '3h' ], [ 4, '4h' ], [ 5, '5h' ], [ 6, '6h' ], [ 7, '7h' ], [ 8, '8h' ], [ 9, '9h' ], [ 10, '10h' ], [ 11, '11h' ], [ 12, '12h' ], [ 13, '13h' ], [ 14, '14h' ], [ 15, '15h' ], [ 16, '16h' ], [ 17, '17h' ], [ 18, '18h' ], [ 19, '19h' ], [ 20, '20h' ], [ 21, '21h' ], [ 22, '22h' ], [ 23, '23h' ]";
 
-			if ($scope.selectSensor === 'duis') {
+			if ($scope.selectSensor === 'AeonTemp') {
 				$scope.d = [
 					[11, 18],
 					[13, 23],
@@ -262,7 +262,7 @@ app.controller('FlotChartDemoCtrl', ['$scope',
 					[16, 20],
 					[16.5, 20]
 				];
-			} else if ($scope.selectSensor === 'consectetur') {
+			} else if ($scope.selectSensor === 'ZipatoLum') {
 				$scope.d = [
 					[11, 250],
 					[13, 250],
@@ -270,7 +270,7 @@ app.controller('FlotChartDemoCtrl', ['$scope',
 					[16, 300],
 					[16.5, 280]
 				];
-			} else if ($scope.selectSensor === 'voluptate') {
+			} else if ($scope.selectSensor === 'ZipatoHum') {
 				$scope.d = [
 					[11, 16],
 					[13, 19],
