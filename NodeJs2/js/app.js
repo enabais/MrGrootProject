@@ -55,7 +55,7 @@ app.factory("Sensor", function SensorFactory($http) {
 
 });
 
-app.factory("Statement", function StatementFactory($http) {
+/*app.factory("Statement", function StatementFactory($http) {
 	var factory = {
 		all: function() {
 			return $http.get('statement.json')
@@ -77,11 +77,11 @@ app.factory("Statement", function StatementFactory($http) {
 
 	return factory;
 
-});
+});*/
 
 
-app.controller('StoreController', ['$http','$window', 'Room', 'Sensor', 'Statement',
-	function($http, $window, Room, Sensor, Statement) {
+app.controller('StoreController', ['$http','$window', 'Room', 'Sensor',
+	function($http, $window, Room, Sensor) {
 		var store = this;
 		store.rooms = [];
 		store.sensors = [];
@@ -99,11 +99,11 @@ app.controller('StoreController', ['$http','$window', 'Room', 'Sensor', 'Stateme
 				console.log("success!");
 			});
 
-		Statement.all()
+		/*Statement.all()
 			.success(function(data) {
 				store.statements = data;
 				console.log("success!");
-			});
+			});*/
 
 		this.addRoom = function() {
 			var value = {};

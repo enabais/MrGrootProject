@@ -7,7 +7,7 @@
 					<div class="form-group">						
 						<div class="col-xs-9 col-sm-5">
 							<label for="inputType" class="control-label">Selectionner un capteur : </label>
-							<select ng-model="selectSensor" class="form-control" id="inputType">
+							<select ng-model="selectSensor" class="form-control" id="inputType" ng-click="refreshData()">
 								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor.name}}">{{sensor.name}}</option>
 							</select>
 							<!--<br>
