@@ -192,8 +192,8 @@ app.controller("AssociateController", ['$http','$window',
 app.controller('FlotChartDemoCtrl', ['$scope',
 	function($scope) {
 		$scope.axisAbs = "[ 0, '0h' ], [ 1, '1h' ], [ 2, '2h' ], [ 3, '3h' ], [ 4, '4h' ], [ 5, '5h' ], [ 6, '6h' ], [ 7, '7h' ], [ 8, '8h' ], [ 9, '9h' ], [ 10, '10h' ], [ 11, '11h' ], [ 12, '12h' ], [ 13, '13h' ], [ 14, '14h' ], [ 15, '15h' ], [ 16, '16h' ], [ 17, '17h' ], [ 18, '18h' ], [ 19, '19h' ], [ 20, '20h' ], [ 21, '21h' ], [ 22, '22h' ], [ 23, '23h' ]";
-
-		$scope.d0 = [
+		$scope.d = [];
+		/*$scope.d0 = [
 			[1, 6.5],
 			[2, 6.5],
 			[3, 7],
@@ -238,10 +238,10 @@ app.controller('FlotChartDemoCtrl', ['$scope',
 				id: $scope.idSensor
 			};
 			$http.post('/sensorStatement', value);
-		};
+		};*/
 
-		$scope.refreshData = function(value) {
-			if (value === 'month') {
+		$scope.refreshData = function() {
+			/*if (value === 'month') {
 				$scope.d = $scope.d0_2;
 				$scope.axisAbs = "[ 1, 'Jan' ], [ 2, 'Feb' ], [ 3, 'Mar' ], [ 4, 'Apr' ], [ 5, 'May' ], [ 6, 'Jun' ], [ 7, 'Jul' ], [ 8, 'Aug' ], [ 9, 'Sep' ], [ 10, 'Oct' ], [ 11, 'Nov' ], [ 12, 'Dec' ]";
 			} else if (value === 'week') {
@@ -251,7 +251,37 @@ app.controller('FlotChartDemoCtrl', ['$scope',
 				$scope.d = $scope.d0;
 				$scope.axisAbs = "[ 0, '0h' ], [ 1, '1h' ], [ 2, '2h' ], [ 3, '3h' ], [ 4, '4h' ], [ 5, '5h' ], [ 6, '6h' ], [ 7, '7h' ], [ 8, '8h' ], [ 9, '9h' ], [ 10, '10h' ], [ 11, '11h' ], [ 12, '12h' ], [ 13, '13h' ], [ 14, '14h' ], [ 15, '15h' ], [ 16, '16h' ], [ 17, '17h' ], [ 18, '18h' ], [ 19, '19h' ], [ 20, '20h' ], [ 21, '21h' ], [ 22, '22h' ], [ 23, '23h' ]";
 
+			}*/
+			$scope.axisAbs = "[ 0, '0h' ], [ 1, '1h' ], [ 2, '2h' ], [ 3, '3h' ], [ 4, '4h' ], [ 5, '5h' ], [ 6, '6h' ], [ 7, '7h' ], [ 8, '8h' ], [ 9, '9h' ], [ 10, '10h' ], [ 11, '11h' ], [ 12, '12h' ], [ 13, '13h' ], [ 14, '14h' ], [ 15, '15h' ], [ 16, '16h' ], [ 17, '17h' ], [ 18, '18h' ], [ 19, '19h' ], [ 20, '20h' ], [ 21, '21h' ], [ 22, '22h' ], [ 23, '23h' ]";
+
+			if ($scope.selectSensor === 'duis') {
+				$scope.d = [
+					[11, 18],
+					[13, 23],
+					[15, 25],
+					[16, 20],
+					[16.5, 20]
+				];
+			} else if ($scope.selectSensor === 'consectetur') {
+				$scope.d = [
+					[11, 250],
+					[13, 250],
+					[15, 350],
+					[16, 300],
+					[16.5, 280]
+				];
+			} else if ($scope.selectSensor === 'voluptate') {
+				$scope.d = [
+					[11, 16],
+					[13, 19],
+					[15, 18],
+					[16, 19],
+					[16.5, 23]
+				];
+			} else {
+				$scope.d = [];
 			}
+
 
 		};
 	}

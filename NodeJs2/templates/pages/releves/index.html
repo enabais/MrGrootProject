@@ -3,21 +3,21 @@
 	<div ng-controller="FlotChartDemoCtrl">
 		<div class="panel panel-default">
 			<div class="panel-heading font-bold">
-				<form name="statementForm" class="form-horizontal" ng-submit="FlotChartDemoCtrl.sendSensor()">
+				<form name="statementForm" class="form-horizontal">
 					<div class="form-group">						
 						<div class="col-xs-9 col-sm-5">
 							<label for="inputType" class="control-label">Selectionner un capteur : </label>
-							<select ng-model="FlotChartDemoCtrl.idSensor" class="form-control" id="inputType">
-								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
+							<select ng-model="selectSensor" class="form-control" id="inputType">
+								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor.name}}">{{sensor.name}}</option>
 							</select>
-							<br>
-							<button type="submit" class="btn btn-default">Rafraichir</button>
+							<!--<br>
+							<button type="submit" class="btn btn-default">Rafraichir</button>-->
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="panel-body">
-				<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
+				<!--<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
 					<li ng-class="{'active': selected == 'day'}">
 						<a href ng-click="selected = 'day' && refreshData('day')">Jour</a>
 					</li>
@@ -27,7 +27,7 @@
 					<li ng-class="{'active': selected == 'month'}">
 						<a href ng-click="selected = 'month' && refreshData('month')">Mois</a>
 					</li>
-				</ul>
+				</ul>-->
 				<div ui-jq="plot" ui-refresh="d" ui-options="
 					[
 					{ data: {{d}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 5, fill: 0 } }
