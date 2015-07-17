@@ -7,24 +7,50 @@
 				<i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': room.status.open, 'glyphicon-chevron-right': !room.status.open}">&nbsp;</i>
 				{{room.name}}
 			</accordion-heading>
-			<div ng-repeat="sensor in storeCtrl.sensors">
-				<div ng-if="sensor.location == room.name">
-					<div class="list-group pull-left">
-						<div class="panel panel-default" style="margin-left:10px;">
-							<div class="panel-heading">
-								<h3 class="panel-title">{{sensor.type}}&nbsp&nbsp&nbsp<a class="close" ng-click="">×</a></h3>
+			<div ng-repeat="mainSensor in storeCtrl.mainSensors">
+				<div ng-if="mainSensor.location == room.name">
+					<div class="panel panel-default" style="margin-left:10px;">
+						<div class="panel-heading">
+							<h3 class="panel-title group-horizontal">
+							<div class="row">
+								<div class="col-xs-4 col-sm-4 col-md-4">
+									{{mainSensor.name}}
+								</div>
+								<div class="col-xs-3 col-sm-3 col-md-3">
+									<div class="progress batteryStyle">
+										<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="{{mainSensor.battery}}" aria-valuemin="0" aria-valuemax="100" style="width: {{mainSensor.battery}}%" tooltip="{{mainSensor.battery}}%">
+											{{mainSensor.battery}}%
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-5 col-sm-5 col-md-5"><a class="close" ng-click="storeCtrl.removeAssociation(room._id,mainSensor._id)">×</a></div>
 							</div>
-							
-							<div class="panel-body">
-								<div class="list-group">
-									<img class="pull-left" ng-src="img/{{sensor.type}}.png"/>
-									<h2 class="pull-left" style="margin-left:20px;">
-										{{sensor.description}} 
-									</h2>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<div ng-repeat="sensor in storeCtrl.sensors">
+								<div ng-if="storeCtrl.contains(mainSensor, sensor)">
+									<div class="list-group pull-left">
+										<div class="panel panel-default" style="margin-left:10px;">
+											<div class="panel-heading">
+												<h3 class="panel-title">{{sensor.type}}</h3>
+											</div>
+											<div class="panel-body">
+												<div class="list-group">
+													<img class="pull-left" ng-src="img/{{sensor.type}}.png"/>
+													<h2 class="pull-left" style="margin-left:20px;">
+													{{sensor.description}} {{sensor.units}}
+													</h2>
+												</div>
+												<h6 class="pull-right">{{sensor.date | date:'medium'}}</h6>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+					</br>
 				</div>
 			</div>
 		</accordion-group>

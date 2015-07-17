@@ -1,52 +1,35 @@
 <div>
 	<h3><strong>Relevés</strong></h3>
-	<div ng-controller="FlotChartDemoCtrl">
+	<div ng-controller="LineCtrl">
 		<div class="panel panel-default">
 			<div class="panel-heading font-bold">
 				<form name="statementForm" class="form-horizontal">
-					<div class="form-group">						
+					<div class="form-group">
 						<div class="col-xs-9 col-sm-5">
 							<label for="inputType" class="control-label">Selectionner un capteur : </label>
-							<select ng-model="selectSensor" class="form-control" id="inputType" ng-click="refreshData()">
-								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor.name}}">{{sensor.name}}</option>
+							<select ng-model="selectSensor" class="form-control" id="inputType" ng-change="refreshData()">
+								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
 							</select>
-							<!--<br>
-							<button type="submit" class="btn btn-default">Rafraichir</button>-->
 						</div>
 					</div>
 				</form>
 			</div>
 			<div class="panel-body">
-				<!--<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
+				<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
 					<li ng-class="{'active': selected == 'day'}">
-						<a href ng-click="selected = 'day' && refreshData('day')">Jour</a>
+						<a href ng-click="selected = 'day' && refreshData()">Jour</a>
 					</li>
 					<li ng-class="{'active': selected == 'week'}">
-						<a href ng-click="selected = 'week' && refreshData('week')">Semaine</a>
+						<a href ng-click="selected = 'week' && refreshData()">Semaine</a>
 					</li>
 					<li ng-class="{'active': selected == 'month'}">
-						<a href ng-click="selected = 'month' && refreshData('month')">Mois</a>
+						<a href ng-click="selected = 'month' && refreshData()">Mois</a>
 					</li>
-				</ul>-->
-				<div ui-jq="plot" ui-refresh="d" ui-options="
-					[
-					{ data: {{d}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 5, fill: 0 } }
-					],
-					{
-					colors: ['blue'],
-					series: { shadowSize: 3 },
-					xaxis:{
-					font: { color: '#ccc' },
-					position: 'bottom',
-					ticks: [{{axisAbs}}]
-					},
-					yaxis:{ font: { color: '#ccc' } },
-					grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
-					tooltip: true,
-					tooltipOpts: { content: '%x is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
-					}
-					" style="height:240px" >
-				</div>
+				</ul>
+				
+			</div>
+			<div class="panel-body">
+				<canvas tc-chartjs-line chart-options="options" chart-data="data" style='padding-right:20px; height:300px;'></canvas>
 			</div>
 		</div>
 	</div>

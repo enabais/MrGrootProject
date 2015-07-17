@@ -1,3 +1,148 @@
-<div>
+<div ng-controller="AlertController as alertCtrl">
 	<h3><strong>Alertes</strong></h3>
+	<fieldset>
+		<legend>Créer une alerte</legend>
+		<form  name="addCUForm" class="form-horizontal" ng-submit="addCUForm.$valid && AlertCtrl.addCU(alertCtrl.alert)" novalidate>
+			<div class="form-group">
+				<div class="col-xs-6 col-md-5">
+					<label for="inputName" class="control-label">Sélection de la salle:</label>
+					<select ng-model="choixroom" class="form-control" id="inputType" required>
+						<option ng-repeat="room in storeCtrl.rooms">{{room.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div ng-show="choixroom">
+				<legend>Choix des paramètres</legend>  <!--<label for="inputName" class="control-label"></label>!-->
+				<div class="form-group">
+					<div class="col-xs-6 col-md-5">
+						<input type="checkbox" ng-model="mystate" data-label-width="10" data-size="small" data-on-text="Plusieurs" data-off-text="Un" bootstrap-switch />
+						<div ng-hide="mystate">
+							<p>Choisir le paramètre voulu :</p>
+							<table class="table text-justify">
+								<tr>
+									<td style="border: none;">
+										<select ng-model="choixsensor" id="inputType" class="form-inline" style="height:32px" required>
+											<option ng-repeat="sensor in allSensor | filter:isSelected">{{sensor.name}}</option>
+										</select>
+									</td>
+									<td style="border: none;">
+										<select ng-model="choixop" ng-hide="isMotion()" id="inputType" class="form-inline" style="height:32px" required>
+											<option for="inputType" class="pull-left"><</option>
+											<option for="inputType" class="pull-left">></option>
+											<option for="inputType" class="pull-left">=</option>
+										</select>
+									</td>
+									<td style="border: none;">
+										<input ng-model="choixvalue" ng-hide="isMotion()" type="text" id="inputValue" placeholder="Valeur voulue" class="form-inline" style="height:32px" required>
+									</td>
+									<td style="border: none;">
+										<select ng-model="choixvalue" ng-show="isMotion()" id="inputType" class="form-inline" style="height:32px" required>
+											<option for="inputType" class="pull-left">true</option>
+											<option for="inputType" class="pull-left">false</option>
+										</select>
+									</td>
+									<td style="border: none;">
+										<button class="btn btn-primary" ng-click="addCU()">Ajouter</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+						
+						<!--<label for="inputName" class="control-label">
+														<input type="radio" name="choix" ng-model="choix" value="plusieurs" class="Toggle ngShow">Plusieurs
+						</label></br>-->
+						<div ng-show="mystate">
+							<p>Choisir les paramètres voulus :</p>
+							<table class="table text-justify">
+								<thead>
+									<tr>
+										<th>
+											<select ng-model="choixsensor" id="inputType" class="form-inline" style="height:32px" required>
+												<option ng-repeat="sensor in allSensor | filter:isSelected">{{sensor.name}}</option>
+											</select>
+										</th>
+										<th>
+											<select ng-model="choixop" id="inputType" class="form-inline" style="height:32px" required>
+												<option for="inputType" class="pull-left"><</option>
+												<option for="inputType" class="pull-left">></option>
+												<option for="inputType" class="pull-left">=</option>
+											</select>
+										</th>
+										<th><input ng-model="choixvalue" type="text" id="inputValue" placeholder="Valeur voulue" class="form-inline" style="height:32px" required></th>
+									</tr>
+									<tr>
+										<th>
+											<select ng-model="choixsensor" id="inputType" class="form-inline" style="height:32px" style="height:32px" required>
+												<option ng-repeat="sensor in allSensor | filter:isSelected">{{sensor.name}}</option>
+											</select>
+										</th>
+										<th>
+											<select ng-model="choixop" id="inputType" class="form-inline" style="height:32px" required>
+												<option for="inputType" class="pull-left"><</option>
+												<option for="inputType" class="pull-left">></option>
+												<option for="inputType" class="pull-left">=</option>
+											</select>
+										</th>
+										<th><input ng-model="choixvalue" type="text" id="inputValue" placeholder="Valeur voulue" class="form-inline" style="height:32px" required></th>
+									</tr>
+									<tr>
+										<th>
+											<select ng-model="choixsensor" id="inputType" class="form-inline" style="height:32px" required>
+												<option ng-repeat="sensor in allSensor | filter:isSelected">{{sensor.name}}</option>
+											</select>
+										</th>
+										<th>
+											<select ng-model="choixop" id="inputType" class="form-inline" style="height:32px" required>
+												<option for="inputType" class="pull-left"><</option>
+												<option for="inputType" class="pull-left">></option>
+												<option for="inputType" class="pull-left">=</option>
+											</select>
+										</th>
+										<th><input ng-model="choixvalue" type="text" id="inputValue" placeholder="Valeur voulue" class="form-inline" style="height:32px" required></th>
+									</tr>
+									<tr>
+										<th>
+											<select ng-model="choixsensor" id="inputType" class="form-inline" style="height:32px" required>
+												<option ng-repeat="sensor in allSensor | filter:isSelected">{{sensor.name}}</option>
+											</select>
+										</th>
+										<th>
+											<select ng-model="choixop" id="inputType" class="form-inline" style="height:32px" required>
+												<option for="inputType" class="pull-left"><</option>
+												<option for="inputType" class="pull-left">></option>
+												<option for="inputType" class="pull-left">=</option>
+											</select>
+										</th>
+										<th><input ng-model="choixvalue" type="text" id="inputValue" placeholder="Valeur voulue" class="form-inline" style="height:32px" required></th>
+										<th><button class="btn btn-primary" ng-click="addCU()">Ajouter</button></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</fieldset>
+	<legend>Liste des alertes</legend>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Référence</th>
+				<th>Comparateur</th>
+				<th>Valeur</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="cu in allCU | orderBy : '-_id'">
+				<th>{{cu._id}}</th>
+				<th>{{cu.ref}}</th>
+				<th>{{cu.op}}</th>
+				<th>{{cu.value}}</th>
+				<th><button class="btn btn-danger" ng-click="deleteCU(cu._id)">Supprimer</button></th>
+			</tr>
+		</tbody>
+	</table>
 </div>

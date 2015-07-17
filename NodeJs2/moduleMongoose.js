@@ -6,7 +6,7 @@ var async = require('async');
 var connect = function() {
 	// On se connecte à la base de données
 	// N'oubliez pas de lancer ~/mongodb/bin/mongod dans un terminal !
-	mongoose.connect('mongodb://172.16.13.112/Capteurs', function(err) {
+	mongoose.connect('mongodb://localhost/Capteurs', function(err) {
 		if (err) {
 			throw err;
 		}
@@ -15,7 +15,6 @@ var connect = function() {
 
 
 //Definition des 2 schemas capteurs et releve
-
 var roomSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -30,6 +29,16 @@ var roomSchema = new mongoose.Schema({
 });
 
 
+//Architecture du réel capteur
+var mainSensorSchema =  new mongoose.Schema({
+	_id: String, //productname_nbre(productname)
+	name: String, //ex: FGMS-001
+	battery: String,
+	nodeid: String, //variable selon le réseau zwave
+	location: String,
+	sensors: []
+});
+
 //Architecture d'un capteur
 var sensorSchema = new mongoose.Schema({
 	_id: String,
@@ -38,7 +47,8 @@ var sensorSchema = new mongoose.Schema({
 		match: /^[a-zA-Z0-9-_]+$/
 	},
 	description: String,
-	type: String,
+	type: String, //label: Temperature, Luminance...
+	units: String, //C, lux(%)...
 	location: String,
 	statement: [],
 	date: {
@@ -68,11 +78,8 @@ var CUSchema = new mongoose.Schema({
 	},
 	description: String,
 	ref: String,
-	op: {
-		type: String,
-		match: /^[a-zA-Z0-9-_]+$/
-	},
-	val: String,
+	op:  String,
+	value: String,
 	ref2: String,
 	date: {
 		type: Date,
@@ -133,6 +140,7 @@ var alertSchema = new mongoose.Schema({
 
 
 // Création du Model pour les commentaires
+var mainSensorModel = mongoose.model('MCapteur', mainSensorSchema);
 var sensorModel = mongoose.model('Capteurs', sensorSchema);
 var statementModel = mongoose.model('Releves', statementSchema);
 var roomModel = mongoose.model('Room', roomSchema);
@@ -168,103 +176,268 @@ var addRoom = function(nameRoom, descriptionRoom) {
 }
 
 
+var containsId = function(objId, arr){
+	for(var i = 0; i<arr.length; ++i){
+		if(objId == arr[i]._id) return true;
+	}
+	return false;
+}
 
 //Fonction pour ajouter une nouvelle condition unitaire
-var addCU = function(idCU, CCCU, descriptionCU, refCU, opCU, valCU) {
+var addCUaux = function(CCCU, descriptionCU, refCU, opCU, valCU) {
 	// On crée une instance du Model
-	var myCU = new CUModel({
-		_id: idCU
-	});
-	myCU.CC_id = CCCU;
-	myCU.description = descriptionCU;
-	myCU.ref = refCU;
-	myCU.op = opCU;
-	myCU.val = valCU;
+	CUModel.find({
+
+	}).exec(function(err,myCUs){
+		if(err) throw err;
+		var tmp = 0;
+		while(containsId('CU_' + tmp, myCUs)) tmp++; 
+
+		var myCU = new CUModel({
+			_id: 'CU_' + tmp
+		});
+		myCU.CC_id = CCCU;
+		myCU.description = descriptionCU;
+		myCU.ref = refCU;
+		myCU.op = opCU;
+		myCU.value = valCU;
 
 
-	var query = CCModel.findOne({
-		_id: CCCU
-	});
-	query.exec(function(err, myCC) {
-		if (err) {
-			throw err;
-		}
-
-		myCC.ref.push(myCU._id);
-		myCC.save(function(err) {
+		var query = CCModel.findOne({
+			_id: CCCU
+		});
+		query.exec(function(err, myCC) {
 			if (err) {
 				throw err;
 			}
 
-		});
-
-		// On le sauvegarde dans MongoDB !
-		myCU.save(function(err) {
-			if (err) {
-				throw err;
-			}
-
-			console.log('condition unitaire ajoutée avec succès !');
-		});
-	});
-
-
-}
-
-
-//Fonction pour ajouter une nouvelle condition Composée
-var addCC = function(idCC, nameCC, descriptionCC) {
-	// On crée une instance du Model
-	var myCC = new CCModel({
-		_id: idCC
-	});
-	myCC.name = nameCC;
-	myCC.description = descriptionCC;
-
-	// On le sauvegarde dans MongoDB !
-	myCC.save(function(err) {
-		if (err) {
-			throw err;
-		}
-
-		console.log('condition composé ajoutée avec succès !');
-	});
-
-
-}
-
-
-//Fonction pour ajouter un nouveau capteur
-var addSensor = function(label, nodeIDSensor, nameSensor, descriptionSensor, locationSensor) {
-	// On crée une instance du Model
-	var mySensor = new sensorModel({
-		_id: label + '_' + nodeIDSensor
-	});
-	mySensor.name = nameSensor;
-	mySensor.description = descriptionSensor;
-	mySensor.type = label;
-	mySensor.location = locationSensor;
-
-	/*
-		var query = roomModel.findOne({
-			_id: locationSensor
-		});
-		query.exec(function(err, myRoom) {
-			if (err) {
-				throw err;
-			}
-
-			myRoom.sensor.push(label + '_' + nodeIDSensor);
-			myRoom.save(function(err) {
+			myCC.ref.push(myCU._id);
+			myCC.save(function(err) {
 				if (err) {
 					throw err;
 				}
 
 			});
 
+			// On le sauvegarde dans MongoDB !
+			myCU.save(function(err) {
+				if (err) {
+					throw err;
+				}
+
+				console.log('condition unitaire ajoutée avec succès !');
+			});
 		});
 
-	*/
+	});
+	
+
+}
+
+var addCU = function(descriptionCU, refCU, opCU, valCU){
+	CCModel.find({
+
+	}).exec(function(err,myCCs){
+		if(err) throw err;
+		var tmp = 0;
+		while(containsId('CC_' + tmp, myCCs)) tmp++; 
+		var myCC = new CCModel({
+			_id: 'CC_' + tmp
+		});
+		myCC.name = "";
+		myCC.description = "";
+
+
+		CUModel.find({
+
+		}).exec(function(err,myCUs){
+			if(err) throw err;
+			var tmp = 0; 
+			while(containsId('CU_' + tmp, myCUs)) tmp++; 
+			var myCU = new CUModel({
+				_id: 'CU_' + tmp
+			});
+
+			myCU.CC_id = myCC._id;
+			myCU.description = descriptionCU;
+			myCU.ref = refCU;
+			myCU.op = opCU;
+			myCU.value = valCU;
+
+			myCC.ref.push(myCU._id);
+			myCC.save(function(err) {
+				if (err) {
+					throw err;
+				}
+
+			});
+			// On le sauvegarde dans MongoDB !
+			myCU.save(function(err) {
+				if (err) {
+					throw err;
+				}
+
+				console.log('condition unitaire ajoutée avec succès !');
+			});
+		});
+	});
+}
+
+
+var addCC = function(nameCC, descriptionCC) {
+	// On crée une instance du Model
+	CCModel.find({
+
+	}).exec(function(err,myCCs){
+		if(err) throw err;
+		var tmp = 0;
+		while(containsId('CC_' + tmp, myCCs)) tmp++; 
+		var myCC = new CCModel({
+			_id: 'CC_' + tmp
+		});
+		myCC.name = nameCC;
+		myCC.description = descriptionCC;
+
+		// On le sauvegarde dans MongoDB !
+		myCC.save(function(err) {
+			if (err) {
+				throw err;
+			}
+			console.log('condition composé ajoutée avec succès !');
+		});
+	});
+}
+
+
+//Fonction pour ajouter une nouvelle condition Composée
+/*var addCC = function(nameCC, descriptionCC) {
+	// On crée une instance du Model
+	CCModel.find({
+
+	}).exec(function(err,myCCs){
+		if(err) throw err;
+		var tmp = myCCs ? myCCs.length : 0;
+		var myCC = new CCModel({
+			_id: 'CC_' + tmp
+		});
+		myCC.name = nameCC;
+		myCC.description = descriptionCC;
+
+		// On le sauvegarde dans MongoDB !
+		myCC.save(function(err) {
+			if (err) {
+				throw err;
+			}
+
+			console.log('condition composé ajoutée avec succès !');
+		});
+	});
+}
+*/
+/*************************************Main Sensor****************************************/
+//fonction d'ajout d'un multi capteur
+//renvoie _id du mainSensor
+var addMainSensor = function(productName, batteryLvl, snsrs, _nodeid, callback){
+	var myMainSensor = new mainSensorModel({});
+	var nameSnsr = productName.replace(' ','_').replace(' ','_'); 
+	mainSensorModel.findOne({
+		nodeid: _nodeid
+	}).exec(function(err, myMS){
+		if(err) throw err;
+		if(myMS){
+			console.log('Capteur déjà enregistré');
+		}
+		else{
+			myMainSensor._id = nameSnsr + '_' + _nodeid;
+			myMainSensor.name = productName + ' ' + _nodeid;
+			myMainSensor.battery = batteryLvl;
+			myMainSensor.sensors = snsrs;
+			myMainSensor.nodeid = _nodeid;
+			myMainSensor.location = '';
+			myMainSensor.save(function(err){
+				if(err) throw err;
+				console.log('Capteur principal ajouté avec succès');
+				callback(myMainSensor._id);
+			});
+		}
+	});
+		
+}
+
+//fonction de mise à jour du capteur dans le réseau zwave avec son nouveau nodeid
+//ajoute le capteur s'il n'est pas dans la base de données
+/*var updateMainSensor = function(nameid, newNodeId, productname, batteryLvl, snsrs, callback){
+	mainSensorModel.findOne({
+		_id: nameid.replace(' ','_').replace(' ','_')
+	}).exec(function(err, myMainSensor){
+		if(err) throw err;
+		if(myMainSensor){
+			if(myMainSensor.nodeid != newNodeId){
+				myMainSensor.nodeid = newNodeId;
+				myMainSensor.save(function(err){
+					if(err) throw err;
+					console.log('Capteur mis à jour avec succès !');
+				});
+			}
+		}
+		else{
+			addMainSensor(productname, batteryLvl, snsrs, newNodeId, callback);
+		}
+	});
+}*/
+
+//fonction prenant  en argument le nom d'un capteur
+//renvoie id associé
+var idMainSensor = function(_nodeid, productName, callback){
+	mainSensorModel.findOne({
+		nodeid: _nodeid
+	}).exec(function(err, myMainSensor){
+		if(err) throw err;
+		if(myMainSensor)
+			callback(myMainSensor._id);
+		else{
+			var tmpProduct = productName.replace(' ','_').replace(' ','_');
+			mainSensorModel.find({
+				name: tmpProduct
+			}).exec(function(err, mainSnsrs){
+				if(err) throw err;
+				callback(tmpProduct + '_' + _nodeid);
+			});
+		}
+	});
+}
+
+var updateBattery = function(_nodeid, newBatteryLvl){
+	mainSensorModel.findOne({
+		nodeid: _nodeId
+	}).exec(function(err, myMainSensor){
+		if(err) throw err;
+		if(myMainSensor){
+			myMainSensor.battery = newBatteryLvl;
+			myMainSensor.save(function(err){
+				if(err) throw err;
+				console.log('Battery level mis à jour');
+			});
+		}
+		else
+			console.log('Error update battery: sensor not found');
+	})
+}
+/****************************************************************************/
+
+/****************************************************************************/
+//Fonction pour ajouter un nouveau capteur
+//modified 03/07/2015
+var addSensor = function(label, nameSensor, descriptionSensor, locationSensor, newId, unit) {
+	// On crée une instance du Model
+	var mySensor = new sensorModel({
+		_id: newId
+	});
+	mySensor.name = nameSensor;
+	mySensor.description = descriptionSensor;
+	mySensor.type = label.replace('_', ' ');
+	mySensor.location = locationSensor;
+	mySensor.units = unit;
 
 	// On le sauvegarde dans MongoDB !
 	mySensor.save(function(err) {
@@ -273,10 +446,19 @@ var addSensor = function(label, nodeIDSensor, nameSensor, descriptionSensor, loc
 		}
 		console.log('Capteur ajouté avec succès !');
 	});
-
-
 }
 
+//fonction verifiant l'existence du capteur
+var existSensor = function(idSnsr, callback){
+	sensorModel.findOne({
+		_id: idSnsr
+	}).exec(function(err, mySensor){
+		if(err) throw err;
+		callback(mySensor);
+	});
+}
+
+/****************************************************************************/
 
 //Fonction pour ajouter un nouveau releve
 var addStatement = function(nodeIDSensor, label, valueStatement) {
@@ -286,8 +468,6 @@ var addStatement = function(nodeIDSensor, label, valueStatement) {
 	});
 	myStatement.value = valueStatement;
 
-
-
 	var query = sensorModel.findOne({
 		_id: label + '_' + nodeIDSensor
 	});
@@ -295,7 +475,10 @@ var addStatement = function(nodeIDSensor, label, valueStatement) {
 		if (err) {
 			throw err;
 		}
-
+		if(!mySensor){
+			console.log('Error add Stattement: sensor not found');
+			return ;
+		}
 		mySensor.statement.push(myStatement._id);
 		mySensor.save(function(err) {
 			if (err) {
@@ -308,13 +491,13 @@ var addStatement = function(nodeIDSensor, label, valueStatement) {
 			if (err) {
 				throw err;
 			}
-			console.log('Releve ajouté avec succès !');
+			console.log('Relevé ajouté avec succès !');
 		});
 	});
 }
 
-
-//Fonction pour ajouter un nouveau releve
+//TODO
+//Fonction pour ajouter un nouveau declencheur
 var addTrigger = function(nodeIDSensor, label, valueStatement) {
 	// On crée une instance du Model
 	var myStatement = new statementModel({
@@ -350,6 +533,16 @@ var addTrigger = function(nodeIDSensor, label, valueStatement) {
 }
 
 
+//Fonction pour supprimer les main capteurs
+var removeMainSensor = function() {
+	mainSensorModel.remove({}, function(err) {
+		if (err) {
+			throw err;
+		}
+		console.log('Main capteurs supprimés !');
+	});
+}
+
 
 //Fonction pour supprimer un capteur
 var removeSensor = function() {
@@ -384,7 +577,7 @@ var removeCC = function() {
 }
 
 
-//Fonction pour supprimer un CU
+//Fonction pour supprimer les CUs
 var removeCU = function() {
 	CUModel.remove({}, function(err) {
 		if (err) {
@@ -394,6 +587,37 @@ var removeCU = function() {
 	});
 }
 
+//Fonction pour supprimer un CU
+var deleteCU = function(idCU) {
+	CUModel.findOne({
+		_id: idCU
+	}).exec(function(err, myCU){
+		if(err) throw err;
+		CCModel.findOne({
+			_id: myCU.CC_id
+		}).exec(function(err, myCC){
+			if(err) throw err;
+
+			var index = myCC.ref.indexOf(idCU);
+			if(index>=0)
+				myCC.ref.splice(index,1);
+			else
+				console.log('CC: ref not found')
+			myCC.save(function(err){
+				if(err) throw err;
+			});
+
+			CUModel.remove({
+				_id: idCU
+			}, function(err) {
+				if (err) {
+					throw err;
+				}
+				console.log('CU supprimé !');
+			});
+		});
+	});
+}
 
 //Fonction pour supprimer une room
 var removeRoom = function() {
@@ -405,7 +629,7 @@ var removeRoom = function() {
 	});
 }
 
-//Fonction pour supprimer une room
+//Fonction pour supprimer une room avec id
 var deleteRoom = function(idRoom) {
 	roomModel.remove({
 		_id: idRoom
@@ -415,6 +639,38 @@ var deleteRoom = function(idRoom) {
 		}
 		console.log('Room supprimés !');
 	});
+}
+
+
+/**********************************************************/
+//fonction pour afficher un main sensor
+var showMainSensor = function() {
+	var query = mainSensorModel.find();
+	query.exec(function(err, capts) {
+		if (err) {
+			throw err;
+		}
+		// On va parcourir le résultat et les afficher joliment
+		var capt;
+		for (var i = 0, l = capts.length; i < l; i++) {
+			capt = capts[i];
+			console.log('--------------Main----------------');
+			console.log('ID : ' + capt._id);
+			console.log('Nom : ' + capt.name);
+			console.log('Node Id : ' + capt.nodeid);
+			console.log('Localisation : ' + capt.location);
+			console.log('Battery : ' + capt.battery);
+			//On parcourt le tableau des états
+			for (var j = 0; j < capt.sensors.length; j++) {
+				var sensor = capt.sensors[j];
+				console.log('IDSensor : ' + sensor);
+			}
+
+			console.log('----------------------------------');
+		}
+
+	});
+
 }
 
 
@@ -434,6 +690,7 @@ var showSensor = function() {
 			console.log('Nom : ' + capt.name);
 			console.log('Type : ' + capt.type);
 			console.log('Localisation : ' + capt.location);
+			console.log('Units : ' + capt.units);
 			console.log('Date Ajout : ' + capt.date);
 			console.log('Description : ' + capt.description);
 			//On parcourt le tableau des états
@@ -441,12 +698,9 @@ var showSensor = function() {
 				var statements = capt.statement[j];
 				console.log('IDStatement : ' + statements);
 			}
-
 			console.log('------------------------------');
 		}
-
 	});
-
 }
 
 
@@ -537,7 +791,7 @@ var showRoom = function() {
 			console.log('Nom : ' + room.name);
 			console.log('Description : ' + room.description);
 			console.log('Date : ' + room.date);
-			console.log('Liste sensors : ' + room.sensor);
+			console.log('List sensors : ' + room.sensor);
 			console.log('------------------------------');
 		}
 	})
@@ -576,9 +830,7 @@ var searchStatementId = function(label, node) {
 //Fonction pour chercher une alerte
 var isThereAnAlert = function(sensorID) {
 
-
-
-	var regVar = sensorID
+	var regVar = sensorID;
 	var query = CUModel.find({ //vérifier les duplicata des CC
 		ref: {
 			$regex: regVar,
@@ -607,7 +859,7 @@ var isThereAnAlert = function(sensorID) {
 }
 
 
-
+//TODO
 //Fonction pour chercher un releve
 var isThisAnAlert = function(CUid, callback) {
 
@@ -644,7 +896,7 @@ var isThisAnAlert = function(CUid, callback) {
 				console.log('value : ' + State.value);
 				console.log('Nom : ' + State.date);
 				console.log('------------------------------');
-				if (eval(State.value + CU.op + CU.val)) {
+				if (eval(State.value + (CU.op == '=' ? '==' : CU.op) + CU.val)) {
 
 					console.log('Alerte : ' + State.value + CU.op + CU.val);
 					nb = 1;
@@ -658,14 +910,14 @@ var isThisAnAlert = function(CUid, callback) {
 			})
 
 
-			//ici déclancher l'ajout du trigger
+			//ici déclencher l'ajout du trigger
 		});
 
 }
 
 
-
-//Fonction pour chercher un releve
+//TODO: compléter
+//Fonction pour chercher une condition composée
 var searchCCid = function(varID) {
 	CCModel.findOne({
 			_id: varID
@@ -677,10 +929,8 @@ var searchCCid = function(varID) {
 				console.log('ID : ' + CC._id);
 				console.log('Nom : ' + CC.name);
 				console.log('Description : ' + CC.description);
-				//On parcourt le tableau des relevé
 
-
-
+				//On parcourt le tableau des conditions composées
 				var test = 0;
 				for (var j = 0, k = CC.ref.length; j < k; j++) {
 					var ref = CC.ref[j];
@@ -710,6 +960,7 @@ var searchCCid = function(varID) {
 
 }
 
+//Affiche les relevés en fonction d'un capteur
 var showStatementBySensor = function(varSensor, callback) {
 	var query = statementModel.find({
 		sensor_id: varSensor
@@ -738,79 +989,49 @@ var showStatementBySensor = function(varSensor, callback) {
 }
 
 
-
-//Fonction pour chercher un releve
+//TODO: clean
+//Fonction pour chercher un releve avec id
 var searchStatementid = function(varID, callback) {
-	/*var query = statementModel.find({
-		sensor_id: varID
-
-	});
-
-	query.exec(function(err, States) {
-		if (err) {
-			throw err;
-		}
-
-		var State;
-		for (var i = 0, l = States.length; i < l; i++) {
-			State = States[i];
-			console.log('------------------------------');
-			console.log('ID : ' + State.sensor_id);
-			console.log('Nom : ' + State.value);
-			console.log('i : ' + i);
-			console.log('------------------------------');
-
-
-
-		}
-	});
-*/
-
-
-
 	statementModel.findOne({
 		sensor_id: varID
 	}, {}, {
 		sort: {
 			'date': -1
 		}
-	}, function(err, State) {
-		if (State != null) {
+	}, function(err, state) {
+		if (state != null) {
 
 			console.log('------------------------------')
-			console.log('ID : ' + State.sensor_id);
-			console.log('value : ' + State.value);
-			console.log('Nom : ' + State.date);
+			console.log('ID : ' + state.sensor_id);
+			console.log('value : ' + state.value);
+			console.log('Nom : ' + state.date);
 			console.log('------------------------------');
 		}
-		return callback(null, State);
+		return callback(null, state);
 
 	})
-
-
-
 }
 
-
-//Fonction pour chercher un releve
+//Fonction pour chercher les capteurs
 var searchSensors = function(callback) {
 
 	var query = sensorModel.find({
 
 	});
-	query.exec(function(err, relevs) {
+	query.exec(function(err, sensrs) {
 		if (err) {
 			throw err;
 		}
 		console.log('recup');
-		return callback(null, relevs);
+		return callback(null, sensrs);
 
 
 
 	});
 }
 
-//Fonction pour chercher un releve
+//TODO
+//Fonction pour 
 var addLast = function(roomVar, callback) {
 
 		searchSensors(roomVar, function(err, relevs) {
@@ -840,51 +1061,28 @@ var addLast = function(roomVar, callback) {
 
 
 	}
-	/*
-	//Fonction pour chercher un releve
-	var listSensor = function(callback) {
 
-		searchSensors(function(err, sensors) {
-			for (var i = 0, l = sensors.length; i < l; i++) {
-				sensor = sensors[i];
-				console.log('------------------------------');
-				console.log('ID : ' + sensor.location);
-				console.log('value : ' + sensor.name);
-				console.log('Date : ' + sensor.date);
-				console.log('------------------------------');
-				searchStatementid(sensor._id, function(err, stat) {
-					sensor.lastStat = stat.value;
-					console.log(sensor.lastStat)
-				});
-			};
-			console.log(sensors[0].lastStat);
-			if (sensors.length == i) {
-				return callback(null, sensors);
-			};
-		});
-
-	}
-	*/
-
-
-//Fonction pour chercher un releve
+//Fonction pour chercher las liste des capteurs
 var listSensor = function(callback) {
 	var results = {};
 	searchSensors(function(err, sensors) {
 		async.forEachOf(sensors, function(sensor, key, cb) {
 			console.log('------------------------------');
-			console.log('ID : ' + sensor.location);
-			console.log('value : ' + sensor.name);
+			console.log('Localisation : ' + sensor.location);
+			console.log('Nom : ' + sensor.name);
 			console.log('Date : ' + sensor.date);
 			console.log('------------------------------');
 			searchStatementid(sensor._id, function(err, stat) {
 				if (err) return cb(err);
-				if (stat != null) {
+				if (stat) {
 					sensor.description = stat.value;
 					console.log('laststat is ' + sensor.description);
 					results[key] = sensor;
 					console.log('affichage de result' + results[key].description);
+					results[key].date = stat.date;
 				}
+				else
+					results[key] = sensor;
 				return cb();
 			});
 		}, function(err) {
@@ -897,9 +1095,103 @@ var listSensor = function(callback) {
 	});
 }
 
+/*********************************************************/
+//Fonction pour chercher les capteurs
+var searchMainSensors = function(callback) {
+	var query = mainSensorModel.find({});
+	query.exec(function(err, sensrs) {
+		if (err) {
+			throw err;
+		}
+		console.log('recup');
+		return callback(null, sensrs);
+	});
+}
 
+//Fonction pour chercher la liste des capteurs
+var listMainSensor = function(callback) {
+	var results = {};
+	searchMainSensors(function(err, mainSensors) {
+		async.forEachOf(mainSensors, function(mainSensor, key, cb) {
+			if(mainSensor.nodeid != 1){
+				console.log('------------------------------');
+				console.log('Localisation : ' + mainSensor.location);
+				console.log('Nom : ' + mainSensor.name);
+				console.log('Battery : ' + mainSensor.battery);
+				console.log('------------------------------');
+				results[key] = mainSensor;
+			}
+			return cb();
+		}, function(err) {
+			if (err) {
+				console.error(err.message)
+				return callback(err);
+			}
+			return callback(null, results);
+		});
+	});
+}
 
-//Fonction pour chercher un releve
+//Fonction pour chercher la liste des relevés
+var listStatement = function(callback) {
+	var results = {};
+	statementModel.find({
+
+	}).sort({date: 1}).exec(function(err, statements) {
+		async.forEachOf(statements, function(statement, key, cb) {
+			results[key] = statement;
+			return cb();
+		}, function(err) {
+			if (err) {
+				console.error(err.message)
+				return callback(err);
+			}
+			return callback(null, results);
+		});
+	});
+}
+
+//Fonction pour chercher la liste des CU
+var listCU = function(callback) {
+	var results = {};
+	CUModel.find({
+
+	}).exec(function(err, myCUs) {
+		async.forEachOf(myCUs, function(myCU, key, cb) {
+			results[key] = myCU;
+			return cb();
+		}, function(err) {
+			if (err) {
+				console.error(err.message)
+				return callback(err);
+			}
+			return callback(null, results);
+		});
+	});
+}
+
+//Fonction pour chercher la liste des CC
+var listCC = function(callback) {
+	var results = {};
+	CCModel.find({
+
+	}).exec(function(err, myCCs) {
+		async.forEachOf(myCCs, function(myCC, key, cb) {
+			results[key] = myCC;
+			return cb();
+		}, function(err) {
+			if (err) {
+				console.error(err.message)
+				return callback(err);
+			}
+			return callback(null, results);
+		});
+	});
+}
+
+/*********************************************************/
+
+//Fonction pour afficher la liste des capteurs
 var affichelistSensor = function(roomVar) {
 
 	listSensor(roomVar, function(err, relevs) {
@@ -916,7 +1208,7 @@ var affichelistSensor = function(roomVar) {
 
 }
 
-//Fonction pour chercher un releve
+//Fonction pour chercher une salle
 var searchRoom = function(callback) {
 	var query = roomModel.find({});
 	query.exec(function(err, rooms) {
@@ -932,53 +1224,8 @@ var searchRoom = function(callback) {
 }
 
 
-/*
-//Fonction pour ajouter un nouveau capteur
-var association = function(idRoom, idSensor) {
-
-
-	var queryRoom = roomModel.findOne({
-		_id: idRoom
-	});
-	queryRoom.exec(function(err, myRoom) {
-		if (err) {
-			throw err;
-		}
-		console.log(myRoom.name);
-
-
-
-		var querySensor = sensorModel.findOne({
-			_id: idSensor
-		});
-		querySensor.exec(function(err, myRoom) {
-			if (err) {
-				throw err;
-			}
-			mySensor.location = myRoom.name;
-			myRoom.sensor.push(idSensor);
-			mySensor.save(function(err) {
-				if (err) {
-					throw err;
-				}
-				myRoom.save(function(err) {
-					if (err) {
-						throw err;
-					}
-					console.log('Capteur ajouté avec succès !');
-				});
-
-			});
-		});
-
-		// On le sauvegarde dans MongoDB !
-
-	});
-
-}*/
-
-//Fonction pour ajouter un nouveau releve
-var association = function(idRoom, idSensor) {
+//Fonction pour ajouter une association d'un sous-capteur
+var associationAux = function(idRoom, idSensor) {
 	// On crée une instance du Model
 	var querySensor = sensorModel.findOne({
 		_id: idSensor
@@ -987,8 +1234,6 @@ var association = function(idRoom, idSensor) {
 		if (err) {
 			throw err;
 		}
-
-
 
 		var query = roomModel.findOne({
 			_id: idRoom
@@ -1012,31 +1257,114 @@ var association = function(idRoom, idSensor) {
 				if (err) {
 					throw err;
 				}
-				console.log('association réalisé avec succès !');
+				console.log('association réalisée avec succès !');
 			});
 		});
 	});
 }
 
-/*Exportation des fonctions*/
+//Fonction permettant d'ajouter un main capteur
+var association = function(idRoom, idMainSensor){
+	mainSensorModel.findOne({
+		_id: idMainSensor
+	}).exec(function(err, myMainSensor){
+		if(err) throw err;
+		for(var i = 0; i<myMainSensor.sensors.length; ++i){
+			associationAux(idRoom, myMainSensor.sensors[i])
+		}
+		roomModel.findOne({
+			_id: idRoom
+		}).exec(function(err,myRoom){
+			if(err) throw err;
+			myMainSensor.location = myRoom.name;
+			myMainSensor.save(function(err){
+				if(err) throw err;
+			});
+		});
+	});
 
+}
+
+var removeAssociationAux = function(idSensor){
+	var querySensor = sensorModel.findOne({
+		_id: idSensor
+	});
+	querySensor.exec(function(err, mySensor) {
+		if (err) {
+			throw err;
+		}
+		mySensor.location = "";
+
+		// On le sauvegarde dans MongoDB !
+		mySensor.save(function(err) {
+			if (err) {
+				throw err;
+			}
+			console.log('suppression de l\'association réalisée avec succès !');
+		});
+	});
+}
+
+//Fonction permettant d'ajouter un main capteur
+var removeAssociation = function(idRoom, idMainSensor){
+	var asyncTasks = [];
+	mainSensorModel.findOne({
+		_id: idMainSensor
+	}).exec(function(err, myMainSensor){
+		if(err) throw err;
+		roomModel.findOne({
+			_id: idRoom
+		}).exec(function(err, myRoom){
+			if(err) throw err;
+			for(var i = 0; i<myMainSensor.sensors.length; ++i){
+				var index = myRoom.sensor.indexOf(myMainSensor.sensors[i]);
+				if(index>=0)
+					myRoom.sensor.splice(index,1);
+				else
+					console.log("Association introuvable");
+				removeAssociationAux(myMainSensor.sensors[i]);
+			}
+			myRoom.save(function(err) {
+				if (err) throw err;
+				myMainSensor.location = "";
+				myMainSensor.save(function(err){
+					if(err) throw err;
+				});
+			});
+		});
+	});
+}
+/*Exportation des fonctions*/
+//exports.updateMainSensor = updateMainSensor;
+
+exports.idMainSensor = idMainSensor;
+
+exports.existSensor = existSensor;
+
+exports.addMainSensor = addMainSensor;
 exports.addSensor = addSensor;
 exports.addStatement = addStatement;
 exports.addRoom = addRoom;
 exports.addCU = addCU;
 exports.addCC = addCC;
 
+exports.showMainSensor = showMainSensor;
 exports.showStatement = showStatement;
 exports.showSensor = showSensor;
 exports.showCC = showCC;
 exports.showCU = showCU;
 exports.showRoom = showRoom;
 
+exports.removeMainSensor = removeMainSensor;
 exports.removeStatement = removeStatement;
 exports.removeRoom = removeRoom;
 exports.removeCU = removeCU;
 exports.removeCC = removeCC;
 exports.removeSensor = removeSensor;
+exports.removeAssociation = removeAssociation;
+
+exports.deleteRoom = deleteRoom;
+exports.deleteCU = deleteCU;
 
 exports.disconnect = disconnect;
 exports.connect = connect;
@@ -1047,9 +1375,12 @@ exports.searchStatementid = searchStatementid;
 //exports.isThereAnAlert = isThereAnAlert;
 exports.isThisAnAlert = isThisAnAlert;
 exports.affichelistSensor = affichelistSensor;
+exports.listMainSensor = listMainSensor;
 exports.listSensor = listSensor;
+exports.listStatement = listStatement;
+exports.listCU = listCU;
+exports.listCC = listCC;
 exports.searchRoom = searchRoom;
 
 exports.association = association;
-exports.deleteRoom = deleteRoom;
 exports.showStatementBySensor = showStatementBySensor;
