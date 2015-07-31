@@ -1,6 +1,6 @@
 <div>
 	<h3><strong>Relevés</strong></h3>
-	<div ng-controller="LineCtrl">
+	<div ng-controller="GraphCtrl">
 		<div class="panel panel-default">
 			<div class="panel-heading font-bold">
 				<form name="statementForm" class="form-horizontal">
@@ -14,6 +14,7 @@
 					</div>
 				</form>
 			</div>
+
 			<div class="panel-body">
 				<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
 					<li ng-class="{'active': selected == 'day'}">
@@ -26,11 +27,40 @@
 						<a href ng-click="selected = 'month' && refreshData()">Mois</a>
 					</li>
 				</ul>
-				
 			</div>
+
 			<div class="panel-body">
-				<canvas tc-chartjs-line chart-options="options" chart-data="data" style='padding-right:20px; height:300px;'></canvas>
+				<!--clipVoronoi="true"
+			        tooltips="true"-->
+				<nvd3-line-chart
+			        data="dataGraph"
+			        width="800"
+		    		height="600"
+			        showXAxis="true"
+			        showYAxis="true"
+  					xAxisTickFormat="xAxisTickFormatFunction()"
+			        interactive="true"
+			        interpolate="step-after"
+			        isArea="true"
+			        useInteractiveGuideLine="true"
+			        noData="No data">
+			    </nvd3-line-chart>
 			</div>
 		</div>
 	</div>
 </div>
+<!-- <div ng-controller="ExampleCtrl">
+	<div>{{dataGraph}}aaaaaaaaaaaaaa</div>
+    <nvd3-line-chart
+        data="dataGraph"
+        width="600"
+		height="350"
+        showXAxis="true"
+        showYAxis="true"
+        interactive="true"
+        interpolate="basis"
+        xAxisTickFormat="xAxisTickFormatFunction()"
+        useInteractiveGuideLine="true"
+        noData="No data">
+    </nvd3-line-chart>
+</div> -->

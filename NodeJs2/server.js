@@ -68,6 +68,11 @@ app.post('/cu', function(req, res) {
         mongoose.addCU(req.body.description, req.body.ref, req.body.op, req.body.val);
 });
 
+/*ajout des cus*/
+app.post('/cus', function(req, res) {
+        mongoose.addCUs(req.body.description, req.body.ref, req.body.op, req.body.val);
+});
+
 /*suppressin des cu*/
 app.post('/deleteCU', function(req, res) {
         mongoose.deleteCU(req.body.id);
@@ -80,9 +85,9 @@ app.get('/listcu', function(req, res) {
         });
 });
 
-/*ajout des cc*/
-app.post('/cc', function(req, res) {
-        mongoose.addCC(req.body.name, req.body.description);
+/*modification des cc*/
+app.post('/modifycc', function(req, res) {
+        mongoose.modifyNameCC(req.body.name, req.body.id);
 });
 
 /*suppression des cc*/
@@ -94,6 +99,13 @@ app.post('/deleteCC', function(req, res) {
 app.get('/listcc', function(req, res) {
         mongoose.listCC(function(err, cc) {
                 res.json(cc);
+        });
+});
+
+/*récupération des notifications*/
+app.get('/notif', function(req, res) {
+        mongoose.listNotif(function(err, notif) {
+                res.json(notif);
         });
 });
 

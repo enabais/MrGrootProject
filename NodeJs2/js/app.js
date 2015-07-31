@@ -1,4 +1,4 @@
-var app = angular.module('myApp', ['ngRoute', 'ui.bootstrap', 'ui.jq', 'ui.load', 'tc.chartjs']);
+var app = angular.module('myApp', ['ngRoute', 'ui.bootstrap', 'ui.jq', 'ui.load', 'tc.chartjs', 'nvd3ChartDirectives']);
 app.constant('JQ_CONFIG', {
 	plot: ['vendors/jquery/charts/flot/jquery.flot.js',
 		'vendors/jquery/charts/flot/jquery.flot.tooltip.min.js',
@@ -14,14 +14,15 @@ app.config(['$routeProvider',
 			.when('/releves', {
 				templateUrl: 'templates/pages/releves/index.html',
 			})
-
-		.when('/alertes', {
-			templateUrl: 'templates/pages/alertes/index.html',
-		})
-
-		.when('/parametre', {
-			templateUrl: 'templates/pages/parametre/index.html',
-		})
+			.when('/alertes', {
+				templateUrl: 'templates/pages/alertes/index.html',
+			})
+			.when('/parametre', {
+				templateUrl: 'templates/pages/parametre/index.html',
+			})
+			.when('/capteurs', {
+				templateUrl: 'templates/pages/capteurs/index.html',
+			})
 			.when('/', {
 				templateUrl: 'templates/pages/accueil/index.html',
 			})
@@ -31,6 +32,7 @@ app.config(['$routeProvider',
 	}
 ]);
 app.directive('bootstrapSwitch', [
+
 	function() {
 		return {
 			restrict: 'A',
@@ -57,6 +59,55 @@ app.directive('bootstrapSwitch', [
 		};
 	}
 ]);
+
+app.directive('uiToggleClass', ['$timeout', '$document',
+	function($timeout, $document) {
+		return {
+			restrict: 'AC',
+			link: function(scope, el, attr) {
+				el.on('click', function(e) {
+					e.preventDefault();
+					var classes = attr.uiToggleClass.split(','),
+						targets = (attr.target && attr.target.split(',')) || Array(el),
+						key = 0;
+					angular.forEach(classes, function(_class) {
+						var target = targets[(targets.length && key)];
+						(_class.indexOf('*') !== -1) && magic(_class, target);
+						$(target).toggleClass(_class);
+						key++;
+					});
+					$(el).toggleClass('active');
+
+					function magic(_class, target) {
+						var patt = new RegExp('\\s' +
+							_class.replace(/\*/g, '[A-Za-z0-9-_]+').split(' ').join('\\s|\\s') +
+							'\\s', 'g');
+						var cn = ' ' + $(target)[0].className + ' ';
+						while (patt.test(cn)) {
+							cn = cn.replace(patt, ' ');
+						}
+						$(target)[0].className = $.trim(cn);
+					}
+				});
+			}
+		};
+	}
+]);
+
+app.directive('scrollable', [function () {
+	return {
+		restrict: 'A',
+		link: function (scope, elem) {
+			elem.mCustomScrollbar({
+				autoHideScrollbar: false,
+				theme:'dark',
+				advanced:{
+					updateOneContentResize: true
+				}
+			});
+		}
+	};
+}]);
 
 app.factory("Room", function RoomFactory($http) {
 	return {
@@ -146,30 +197,27 @@ app.controller('StoreController', ['$http', '$window', 'Room', 'Sensor', 'MainSe
 		store.rooms = [];
 		store.sensors = [];
 		store.mainSensors = [];
-		store.statements = [];
 
 		Room.all()
 			.success(function(data) {
-				store.rooms = data;
-				console.log("success!");
+				angular.forEach(data, function(value) {
+					store.rooms.push(value);
+				});
 			});
 
 		Sensor.all()
 			.success(function(data) {
-				store.sensors = data;
-				console.log("success!");
+				angular.forEach(data, function(value) {
+					store.sensors.push(value);
+				});
 			});
 
 		MainSensor.all()
 			.success(function(data) {
-				store.mainSensors = data;
-				console.log('success!');
+				angular.forEach(data, function(value) {
+					store.mainSensors.push(value);
+				});
 			});
-		/*Statement.all()
-			.success(function(data) {
-				store.statements = data;
-				console.log("success!");
-			});*/
 
 		this.addRoom = function() {
 			var value = {};
@@ -214,33 +262,61 @@ app.controller('StoreController', ['$http', '$window', 'Room', 'Sensor', 'MainSe
 	}
 ]);
 
-app.controller('AlertController', ['$http', '$scope', '$window', 'CU', 'CC', 'Sensor',
-	function($http, $scope, $window, CU, CC, Sensor) {
-		/*var store = this;
-		alert.cc = [];
-		alert.cu = [];
 
-		CU.all()
-			.success(function(data) {
-				alert.cu = data;
-				console.log("success!");
+app.controller('NotifController', ['$http', '$scope', '$window', 'Sensor',
+	function($http, $scope, $window, Sensor) {
+
+		$scope.allNotif = [];
+		$scope.allSensor = [];
+		$scope.counter = [];
+		$scope.data = [];
+
+
+		$http.get('/notif').success(function(data) {
+				angular.forEach(data, function(value) {
+					$scope.allNotif.push(value);
+				});
 			});
 
-		CC.all()
-			.success(function(data) {
-				alert.cc = data;
-				console.log("success!");
-			});*/
-		$scope.allCU = [];
-		$scope.allCC = [];
-		$scope.allSensor = [];
+		$http.get('/nbenotif')
+			.success(function(compteur) {
+				$scope.counter=compteur;
+				console.log(compteur);
+			})
 
-		Sensor.all()
+		/*Sensor.all()
 			.success(function(data) {
 				angular.forEach(data, function(value) {
 					$scope.allSensor.push(value);
 				});
-			});
+			});*/
+
+		$scope.closeAlert = function(index) {
+			$scope.allNotif.splice(index, 1);
+		};
+	}
+]);
+
+/*
+app.controller('AlertDemoCtrl', function ($scope) {
+  $scope.alerts = [
+    { type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.' },
+    { type: 'success', msg: 'Well done! You successfully read this important alert message.' }
+  ];
+
+  $scope.addAlert = function() {
+    $scope.alerts.push({msg: 'Another alert!'});
+  };
+});*/
+
+app.controller('AlertController', ['$http', '$scope', '$window', 'CU', 'CC', 'Sensor', '$route',
+	function($http, $scope, $window, CU, CC, Sensor, $route) {
+
+
+		$scope.allCU = [];
+		$scope.allCC = [];
+		$scope.count = 0;
+		$scope.comparator = ['=', '>', '<'];
 
 		CU.all()
 			.success(function(data) {
@@ -254,13 +330,22 @@ app.controller('AlertController', ['$http', '$scope', '$window', 'CU', 'CC', 'Se
 					$scope.allCC.push(value);
 				});
 			});
+
 		$scope.isSelected = function(sensor) {
 			return (sensor.location == $scope.choixroom);
 		};
 
+		$scope.increase = function() {
+			return ($scope.count = Math.abs($scope.count + 1) % 3);
+		};
+
+		$scope.descrease = function() {
+			return ($scope.count = Math.abs($scope.count - 1) % 3);
+		};
+
 		$scope.addCU = function() {
 			var value = {};
-			if ($scope.isMotion()) {
+			if ($scope.isMotion($scope.choixsensor)) {
 				$scope.choixop = '=';
 			}
 			value = {
@@ -270,6 +355,57 @@ app.controller('AlertController', ['$http', '$scope', '$window', 'CU', 'CC', 'Se
 				val: $scope.choixvalue
 			};
 			$http.post('/cu', value);
+			$window.location.reload();
+			//$route.reload();
+		};
+
+		$scope.addCUs = function() {
+			var value = {};
+			var tmpOp = [];
+			var tmpVal = [];
+			var tmpSensor = [];
+			if ($scope.isMotion($scope.choixsensor1)) {
+				$scope.choixop1 = '=';
+			}
+			if ($scope.choixsensor1 && $scope.choixvalue1 != "" && $scope.choixop1) {
+				tmpOp.push($scope.choixop1);
+				tmpSensor.push($scope.choixsensor1);
+				tmpVal.push($scope.choixvalue1);
+			}
+
+			if ($scope.isMotion($scope.choixsensor2)) {
+				$scope.choixop2 = '=';
+			}
+			if ($scope.choixsensor2 && $scope.choixvalue2 != "" && $scope.choixop2) {
+				tmpOp.push($scope.choixop2);
+				tmpSensor.push($scope.choixsensor2);
+				tmpVal.push($scope.choixvalue2);
+			}
+
+			if ($scope.isMotion($scope.choixsensor3)) {
+				$scope.choixop3 = '=';
+			}
+			if ($scope.choixsensor3 && $scope.choixvalue3 != "" && $scope.choixop3) {
+				tmpOp.push($scope.choixop3);
+				tmpSensor.push($scope.choixsensor3);
+				tmpVal.push($scope.choixvalue3);
+			}
+
+			if ($scope.isMotion($scope.choixsensor4)) {
+				$scope.choixop4 = '=';
+			}
+			if ($scope.choixsensor4 && $scope.choixvalue4 != "" && $scope.choixop4) {
+				tmpOp.push($scope.choixop4);
+				tmpSensor.push($scope.choixsensor4);
+				tmpVal.push($scope.choixvalue4);
+			}
+			value = {
+				description: $scope.description,
+				ref: tmpSensor,
+				op: tmpOp,
+				val: tmpVal
+			};
+			$http.post('/cus', value);
 			$window.location.reload();
 		};
 
@@ -283,13 +419,23 @@ app.controller('AlertController', ['$http', '$scope', '$window', 'CU', 'CC', 'Se
 		};
 
 
-		$scope.addCC = function() {
+		/*$scope.addCC = function() {
 			var value = {};
 			value = {
 				name: this.name,
 				description: this.description
 			};
 			$http.post('/cc', value);
+			$window.location.reload();
+		};*/
+
+		$scope.modifyNameCC = function(ccid, name) {
+			var value = {};
+			value = {
+				name: name,
+				id: ccid
+			};
+			$http.post('/modifycc', value);
 			$window.location.reload();
 		};
 
@@ -298,17 +444,36 @@ app.controller('AlertController', ['$http', '$scope', '$window', 'CU', 'CC', 'Se
 			value = {
 				id: idCC
 			};
+
 			$http.post('/deleteCC', value);
 			$window.location.reload();
 		};
 
-		$scope.isMotion = function() {
+		$scope.isMotion = function(choixsensor) {
 			for (var i = 0; i < $scope.allSensor.length; ++i) {
-				if ($scope.allSensor[i].name == $scope.choixsensor) {
+				if ($scope.allSensor[i].name == choixsensor) {
 					return $scope.allSensor[i].type == 'Motion Sensor';
 				}
 			}
 			return false;
+		};
+
+		$scope.sensorLocation = function(sensorName) {
+			for (var i = 0; i < $scope.allSensor.length; ++i) {
+				if ($scope.allSensor[i].name == sensorName) {
+					return $scope.allSensor[i].location;
+				}
+			}
+			return "";
+		};
+
+		$scope.sensorUnits = function(choixsensor) {
+			for (var i = 0; i < $scope.allSensor.length; ++i) {
+				if ($scope.allSensor[i].name == choixsensor) {
+					return $scope.allSensor[i].units;
+				}
+			}
+			return "";
 		};
 	}
 
@@ -338,29 +503,8 @@ app.controller('AccordionDemoCtrl', function() {
 		isFirstOpen: true,
 		isFirstDisabled: false
 	};
-
-
 });
 
-/*app.controller("RoomController", ['$http', 'Room',
-	function($http, Room) {
-		var store = this;
-		store.rooms = [];
-		var value = {};
-		this.addRoom = function() {
-			value = {
-				name: this.name,
-				description: this.description
-			};
-			$http.post('/room', value);
-			Room.all()
-				.success(function(data) {
-					store.rooms = data;
-					console.log("success!");
-				});
-		};
-	}
-]);*/
 
 app.controller("AssociateController", ['$http', '$window',
 	function($http, $window) {
@@ -462,92 +606,47 @@ app.controller("LineCtrl", ['$scope', '$http', '$filter',
 	}
 ]);
 
-/*app.controller('FlotChartDemoCtrl', ['$scope',
-	function($scope) {
-		$scope.axisAbs = "[ 0, '0h' ], [ 1, '1h' ], [ 2, '2h' ], [ 3, '3h' ], [ 4, '4h' ], [ 5, '5h' ], [ 6, '6h' ], [ 7, '7h' ], [ 8, '8h' ], [ 9, '9h' ], [ 10, '10h' ], [ 11, '11h' ], [ 12, '12h' ], [ 13, '13h' ], [ 14, '14h' ], [ 15, '15h' ], [ 16, '16h' ], [ 17, '17h' ], [ 18, '18h' ], [ 19, '19h' ], [ 20, '20h' ], [ 21, '21h' ], [ 22, '22h' ], [ 23, '23h' ]";
-		$scope.d = [];
-		$scope.d0 = [
-			[1, 6.5],
-			[2, 6.5],
-			[3, 7],
-			[4, 8],
-			[5, 7.5],
-			[6, 7],
-			[7, 6.8],
-			[8, 7],
-			[9, 7.2],
-			[10, 7],
-			[11, 6.8],
-			[12, 7],
-			[16, 6.5]
-		];
-		$scope.d0_1 = [
-			[1, 6.5],
-			[2, 12.5],
-			[3, 7],
-			[4, 9],
-			[5, 6],
-			[6, 11],
-			[7, 6.5]
-		];
-
-		$scope.d0_2 = [
-			[1, 4.5],
-			[2, 7],
-			[3, 4.5],
-			[4, 3],
-			[5, 3.5],
-			[6, 6],
-			[7, 3],
-			[8, 4],
-			[9, 3]
-		];
-
-		$scope.d = $scope.d0;
-
+app.controller("GraphCtrl", ['$scope', '$http', '$filter',
+	function($scope, $http, $filter) {
 		$scope.refreshData = function() {
-			if (value === 'month') {
-				$scope.d = $scope.d0_2;
-				$scope.axisAbs = "[ 1, 'Jan' ], [ 2, 'Feb' ], [ 3, 'Mar' ], [ 4, 'Apr' ], [ 5, 'May' ], [ 6, 'Jun' ], [ 7, 'Jul' ], [ 8, 'Aug' ], [ 9, 'Sep' ], [ 10, 'Oct' ], [ 11, 'Nov' ], [ 12, 'Dec' ]";
-			} else if (value === 'week') {
-				$scope.d = $scope.d0_1;
-				$scope.axisAbs = "[ 1, 'Lun' ], [ 2, 'Mar' ], [ 3, 'Mer' ], [ 4, 'Jeu' ], [ 5, 'Ven' ], [ 6, 'Sam' ], [ 7, 'Dim' ]";
-			} else if (value === 'day') {
-				$scope.d = $scope.d0;
-				$scope.axisAbs = "[ 0, '0h' ], [ 1, '1h' ], [ 2, '2h' ], [ 3, '3h' ], [ 4, '4h' ], [ 5, '5h' ], [ 6, '6h' ], [ 7, '7h' ], [ 8, '8h' ], [ 9, '9h' ], [ 10, '10h' ], [ 11, '11h' ], [ 12, '12h' ], [ 13, '13h' ], [ 14, '14h' ], [ 15, '15h' ], [ 16, '16h' ], [ 17, '17h' ], [ 18, '18h' ], [ 19, '19h' ], [ 20, '20h' ], [ 21, '21h' ], [ 22, '22h' ], [ 23, '23h' ]";
-
-			}
-			$scope.axisAbs = "[ 0, '0h' ], [ 1, '1h' ], [ 2, '2h' ], [ 3, '3h' ], [ 4, '4h' ], [ 5, '5h' ], [ 6, '6h' ], [ 7, '7h' ], [ 8, '8h' ], [ 9, '9h' ], [ 10, '10h' ], [ 11, '11h' ], [ 12, '12h' ], [ 13, '13h' ], [ 14, '14h' ], [ 15, '15h' ], [ 16, '16h' ], [ 17, '17h' ], [ 18, '18h' ], [ 19, '19h' ], [ 20, '20h' ], [ 21, '21h' ], [ 22, '22h' ], [ 23, '23h' ]";
-
-			if ($scope.selectSensor === 'AeonTemp') {
-				$scope.d = [
-					[11, 18],
-					[13, 23],
-					[15, 25],
-					[16, 20],
-					[16.5, 20]
-				];
-			} else if ($scope.selectSensor === 'ZipatoLum') {
-				$scope.d = [
-					[11, 250],
-					[13, 250],
-					[15, 350],
-					[16, 300],
-					[16.5, 280]
-				];
-			} else if ($scope.selectSensor === 'ZipatoHum') {
-				$scope.d = [
-					[11, 16],
-					[13, 19],
-					[15, 18],
-					[16, 19],
-					[16.5, 23]
-				];
-			} else {
-				$scope.d = [];
-			}
-
-
+			$scope.values = [];
+			$scope.statements = [];
+			$http.post('/statementId', {sensorId: $scope.selectSensor})
+			.success(function(data) {
+				$scope.values.push(data);
+				angular.forEach($scope.values[0], function(eachValue) {
+					var tmpDate1 = new Date(eachValue.date);//$filter('date')(eachValue.date, 'shortDate');
+					var tmpDate = tmpDate1.getTime();
+					//if ('7/10/15' == $filter('date')(eachValue.date, 'shortDate')) {
+						if (eachValue.value == 'true') {
+							$scope.statements.push([tmpDate, 1]);
+						} else if (eachValue.value == 'false') {
+							$scope.statements.push([tmpDate, 0]);
+						} else {
+							$scope.statements.push([tmpDate, parseFloat(eachValue.value)]);
+						}
+						console.log(d3.time.format('%d %M %Y')(new Date(eachValue.date)));
+						console.log(tmpDate);
+					//};
+				});
+				$scope.dataGraph = [
+	            {
+	                "key": "Graph",
+	                "values": $scope.statements
+	            }];
+	            console.log($scope.statements);
+			});
 		};
-	}
-]);*/
+
+        
+
+
+
+
+		$scope.xAxisTickFormatFunction = function() {
+		    return function(d){
+		      	return d3.time.format('%H:%M %d/%m')(new Date(d));
+		    }
+		};
+    }]
+);
