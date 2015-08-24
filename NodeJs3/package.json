@@ -1,0 +1,13 @@
+{
+    "name": "Mr.GROOT-NodeJs1",
+    "main": "app.js",
+    "version": "1.0.0",
+    "dependencies": {
+        "cron-runner": "~0.1.1",
+	"inherit": "~2.2.2"
+    },
+    "author": "Eric Nabais - Florian Guitoger - Tevainui MI YOU - Arnaud JANSON-DE-COUÊT",
+    "description": "Voir log"
+}
+
+

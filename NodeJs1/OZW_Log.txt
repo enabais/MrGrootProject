@@ -1,0 +1,38 @@
+2015-08-11 11:42:05.937 Always, OpenZwave Version 1.2.919 Starting Up
+2015-08-11 11:42:05.939 Info, mgr,     Added driver for controller /dev/ttyUSB0
+2015-08-11 11:42:05.943 Info,   Opening controller /dev/ttyUSB0
+2015-08-11 11:42:05.944 Info, Trying to open serial port /dev/ttyUSB0 (attempt 1)
+2015-08-11 11:42:05.950 Error, ERROR: Cannot get exclusive lock for serial port /dev/ttyUSB0. Error code 11
+2015-08-11 11:42:05.951 Info, Serial port /dev/ttyUSB0 opened (attempt 1)
+2015-08-11 11:42:05.953 Detail, contrlr, Queuing (Command) FUNC_ID_ZW_GET_VERSION: 0x01, 0x03, 0x00, 0x15, 0xe9
+2015-08-11 11:42:05.954 Detail, contrlr, Queuing (Command) FUNC_ID_ZW_MEMORY_GET_ID: 0x01, 0x03, 0x00, 0x20, 0xdc
+2015-08-11 11:42:05.954 Detail, contrlr, Queuing (Command) FUNC_ID_ZW_GET_CONTROLLER_CAPABILITIES: 0x01, 0x03, 0x00, 0x05, 0xf9
+2015-08-11 11:42:05.954 Detail, contrlr, Queuing (Command) FUNC_ID_SERIAL_API_GET_CAPABILITIES: 0x01, 0x03, 0x00, 0x07, 0xfb
+2015-08-11 11:42:05.954 Detail, contrlr, Queuing (Command) FUNC_ID_ZW_GET_SUC_NODE_ID: 0x01, 0x03, 0x00, 0x56, 0xaa
+2015-08-11 11:42:05.955 Detail, 
+2015-08-11 11:42:05.955 Info, contrlr, Sending (Command) message (Callback ID=0x00, Expected Reply=0x15) - FUNC_ID_ZW_GET_VERSION: 0x01, 0x03, 0x00, 0x15, 0xe9
+2015-08-11 11:42:06.963 Detail, 
+2015-08-11 11:42:06.963 Info, contrlr, Sending (Command) message (Attempt 2, Callback ID=0x00, Expected Reply=0x15) - FUNC_ID_ZW_GET_VERSION: 0x01, 0x03, 0x00, 0x15, 0xe9
+2015-08-11 11:42:07.965 Detail, 
+2015-08-11 11:42:07.965 Info, contrlr, Sending (Command) message (Attempt 3, Callback ID=0x00, Expected Reply=0x15) - FUNC_ID_ZW_GET_VERSION: 0x01, 0x03, 0x00, 0x15, 0xe9
+2015-08-11 11:42:08.850 Always, ***************************************************************************
+2015-08-11 11:42:08.851 Always, *********************  Cumulative Network Statistics  *********************
+2015-08-11 11:42:08.851 Always, *** General
+2015-08-11 11:42:08.851 Always, Driver run time: . .  . 0 days, 0 hours, 0 minutes
+2015-08-11 11:42:08.851 Always, Frames processed: . . . . . . . . . . . . . . . . . . . . 0
+2015-08-11 11:42:08.851 Always, Total messages successfully received: . . . . . . . . . . 0
+2015-08-11 11:42:08.851 Always, Total Messages successfully sent: . . . . . . . . . . . . 3
+2015-08-11 11:42:08.851 Always, ACKs received from controller:  . . . . . . . . . . . . . 0
+2015-08-11 11:42:08.851 Always, *** Errors
+2015-08-11 11:42:08.851 Always, Unsolicited messages received while waiting for ACK:  . . 0
+2015-08-11 11:42:08.852 Always, Reads aborted due to timeouts:  . . . . . . . . . . . . . 0
+2015-08-11 11:42:08.852 Always, Bad checksum errors:  . . . . . . . . . . . . . . . . . . 0
+2015-08-11 11:42:08.852 Always, CANs received from controller:  . . . . . . . . . . . . . 0
+2015-08-11 11:42:08.852 Always, NAKs received from controller:  . . . . . . . . . . . . . 0
+2015-08-11 11:42:08.852 Always, Out of frame data flow errors:  . . . . . . . . . . . . . 0
+2015-08-11 11:42:08.852 Always, Messages retransmitted: . . . . . . . . . . . . . . . . . 2
+2015-08-11 11:42:08.852 Always, Messages dropped and not delivered: . . . . . . . . . . . 0
+2015-08-11 11:42:08.853 Always, ***************************************************************************
+2015-08-11 11:42:08.853 Warning, WARNING: Tried to write driver config with no home ID set
+2015-08-11 11:42:10.857 Detail, contrlr, Removing current message
+2015-08-11 11:42:10.858 Info, mgr,     Driver for controller /dev/ttyUSB0 removed

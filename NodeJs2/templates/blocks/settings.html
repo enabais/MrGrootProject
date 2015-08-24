@@ -1,0 +1,24 @@
+<button class="btn btn-default no-shadow pos-abt" ui-toggle-class="active" target=".settings">
+<i class="fa fa-bell-o" aria-hidden="true"></i>
+<span class="badge badge-sm up bg-white pull-right-xs">{{counter.counter}}</span>
+</button>
+<div class="panel-heading text-center">
+	Notifications
+</div>
+
+<div class="panel-body"  style="width:100%; height:400px; overflow: auto">
+	<!--<alert ng-repeat="notif in allNotif" type="danger" close="closeAlert($index)" class="text-center">!-->
+		<div ng-repeat="notif in allNotif track by $index" class="alert" ng-class="{'alert-danger': notif.isFirst=='true', 'alert-success': notif.isFirst=='false'}" role="alert" ng-animate="">
+			<button type="button" class="close" aria-label="Close" ng-click="closeAlert($index)"><span aria-hidden="true">&times;</span></button>
+			<h4>{{notif.location}}</h4>
+			<span ng-repeat="val in notif.values track by $index">
+				<img ng-src="img/{{notif.types[$index]}}.png" style="width:10%; height:10%;"/><strong>{{val}}</strong>
+			</span></br>
+				{{notif.date | date: 'short'}}
+		</div>
+	<!--</alert>!-->	
+</div>
+<div class="panel-foot text-center" style="height:60px">
+	</br>Total: {{allNotif.length}}</br>
+	<a ng-click="removeAlert()">Supprimer tout</a>
+</div>

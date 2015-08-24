@@ -1,0 +1,47 @@
+<div class="col-xs-10 col-sm-10 col-md-10">
+	<h3><strong>Capteurs</strong></h3>
+	<fieldset>
+		<legend>Liste des capteurs détectés</legend>
+		<div class="table-responsive">
+			<table class="table table-condensed table-hover">
+				<thead>
+					<th>Id</th>
+					<th>Nom</th>
+					<th>Batterie</th>
+					<th>Type</th>
+					<th>Valeur</th>
+					<th>Unité</th>
+				</thead>
+				<tbody ng-repeat="mainSensor in storeCtrl.mainSensors">
+					<tr class="table-capteurs active">
+						<td>{{mainSensor._id}}</td>
+						<!--<td>{{mainsSensor.room}}</td>!-->
+						<td>{{mainsSensor.name}}</td>
+						<td>{{mainSensor.battery}} %</td>
+					</tr>
+					<tr ng-repeat="sensor in storeCtrl.sensors" class="table table-detail" ng-if="storeCtrl.contains(mainSensor, sensor)">
+						<td>{{sensor._id}}</td>
+						<td>{{sensor.name}}</td>
+						<td></td>
+						<td>{{sensor.type}}</td>
+						<td>{{sensor.description}}</td>
+						<td>{{sensor.units}}</td>
+						<!--<td>{{sensor.date}}</td>!-->
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</fieldset>
+</div>
+
+<!--
+<tbody ng-repeat="browser in browsers">
+  <tr class="total">
+    <td class="browser">{{browser.name}}</td>
+    <td class="pct">{{browser.total}} %</td>
+  </tr>
+  <tr ng-repeat="version in browser.versions" class="detail">
+    <td class="browser">{{browser.name}} {{version.name}}</td>
+    <td class="pct">{{version.value}} %</td>
+  </tr>
+<tbody> !-->

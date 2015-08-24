@@ -1,11 +1,13 @@
 {
-    "name": "super-chat",
-    "version": "0.1.0",
+    "name": "Mr.GROOT-NodeJs1",
+    "main": "app.js",
+    "version": "1.0.0",
     "dependencies": {
-        "express": "~3.3.4",
-        "socket.io": "~1.2.1",
-        "ent": "~0.1.0"
+        "openzwave": "~0.0.33",
+	"async": "~1.4.2"
     },
-    "author": "Mateo21 <mateo21@email.com>",
-    "description": "Un super Chat temps r√©el avec socket.io"
+    "author": "Eric Nabais - Florian Guitoger - Tevainui MI YOU - Arnaud JANSON-DE-COU T",
+    "description": "Voir log"
 }
+
+

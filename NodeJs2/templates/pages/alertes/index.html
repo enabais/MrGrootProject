@@ -1,3 +1,180 @@
-<div>
-	<h3><strong>Alertes</strong></h3>
+<div ng-controller="AlertController as alertCtrl">
+	<h3><strong>Alertes</strong></h3> 
+	<input type="checkbox" ng-click="switchoption" ng-model="state" data-label-width="10" data-size="small" data-on-text="Régulière" data-off-text="Silencieuse"  bootstrap-switch tooltip="Régularité alerte"/>{{state}}
+	<div class="panel panel-default col-md-7 col-xs-7 col-sm-7 table-responsive">
+		<div class="panel-heading">
+			<h5>Ajouter une condition</h5>
+			<div class="panel-body panel-responsive">
+		<!--<tabset class="tab-container" ng-init="steps={step1:true, step2:false, step3:false, step4:false}">!-->
+			<!--<tab heading="Conditions" active="steps.step1">!-->
+				<form name="step1" class="form-validation">
+					<table>
+						<tbody class="text-center">
+							<tr>
+								<td></td>
+
+								<td ng-hide="isMotion(namecapteur)">
+									<a class="btn btn-link" ng-click="descrease()"><span class="glyphicon glyphicon-chevron-up"></span></a>
+								</td>
+
+								<!-- if isMotion -->
+								<td ng-if="!isMotion(namecapteur)"></td>
+								<!-- else -->
+								<td ng-if="isMotion(namecapteur)">
+									<a class="btn btn-link" ng-click="decreaseBool()"><span class="glyphicon glyphicon-chevron-up"></span></a>
+								</td>
+								<!-- endif -->
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr >
+								<td>
+									<button ng-model="typecapteur" style="width:80px; height:80px; border-radius: 5px 0 0 5px;" type="button" class="btn btn-default" ng-init="sensorShow=false" ng-click="sensorShow=!sensorShow">Capteur</button>
+								</td>
+								<td class="form-group" ng-hide="isMotion(namecapteur)">
+									<input ng-model="operateur" style="width:40px; height:80px;" type="text" class="form-control" readonly required>
+								</td>
+
+								<!-- if !isMotion -->
+								<td ng-hide="isMotion(namecapteur)">
+									<input ng-model="valeur" ng-change="isNumeric(valeur) ? valeur : valeur = ''" style="width:80px; height:80px; border-radius: 0 5px 5px 0;" type="text" class="form-control" placeholder="Valeur" required></input>
+									
+								</td>
+								<!-- else -->
+								<td class="form-group" ng-show="isMotion(namecapteur)" >
+									<input ng-model="valeur" style="width:80px; height:80px; border-radius: 0 5px 5px 0;" type="text" class="form-control text-center" readonly required>
+								</td>
+								<!-- endif -->
+
+								<td style="border: none;" ng-hide="isMotion(namecapteur)">{{sensorUnits(namecapteur)}}</td>
+								<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td>
+									<button class="btn btn-primary btn-rounded"  ng-model="conditiondeux"  ng-click="ajoutCU()"><i class="fa fa-arrow-right"></i></button>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td ng-hide="isMotion(namecapteur)">
+									<a class="btn btn-link" ng-click="increase()"><span class="glyphicon glyphicon-chevron-down"></span></a>
+								</td>	
+								<!-- if isMotion -->
+								<td ng-if="!isMotion(namecapteur)"></td>
+								<!-- else -->
+								<td ng-if="isMotion(namecapteur)">
+									<a class="btn btn-link" ng-click="increaseBool()"><span class="glyphicon glyphicon-chevron-down"></span></a>
+								</td>
+								<!-- endif -->
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+					
+					<div ng-show="sensorShow" class="panel-responsive b-a bg-light lt" style="width:70%;">
+						<div class="panel-body pos-rlt b-light">
+							<span class="arrow arrow-light top"></span>
+							<div class="input-group" style="margin-bottom:10px;">
+								<input ng-model="searchSensor.location" type="text" class="form-control input-sm btn-rounded" placeholder="Rentrer une salle">
+								<span class="input-group-addon sm rounded">
+									<i class="glyphicon glyphicon-search"></i>
+								</span>
+							</div>
+							<div ng-repeat="sensor in storeCtrl.sensors | orderBy:'location' | filter:searchSensor">
+								<div class="panel panel-default" style="float:left; margin-right:10px;">
+									<div class="panel-body">
+										<div class="cc-selector">
+											<input id="{{sensor._id}}" type="radio" name="list-sensor" value="{{sensor._id}}" ng-click="updatetype(sensor)" required/>
+											<label class="drinkcard-cc" for="{{sensor._id}}"><img ng-src="img/{{sensor.type}}.png"/></label>
+										</div>
+									</div>
+									<div class="panel-footer text-center">
+										{{sensor.location}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+				<!--</tab>!-->
+			<!--</tabset>!-->
+			</div>
+		</div>
+	</div>
+	<div class="col bg-light dk r-r col-md-5 col-xs-5 col-sm-5">
+		<div class="table-responsive">
+			<h5>Condition ajouté</h5>
+			<table class="table text-center">
+				<tr ng-repeat="cuType in choixtype track by $index">
+					<td><img ng-src="img/{{cuType}}.png" style="width:25%; height:50%;"/></td>
+					<td>{{choixop[$index]}}</td>
+					<td>{{choixvalue[$index]}}</td>
+					<td>{{choixroom[$index]}}</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><button type="submit" class="btn btn-primary btn-rounded" ng-click="addCUs()"><h5>Ajouter</h5></button></td> <!--class="glyphicon glyphicon-plus"!-->
+				</tr>
+			</table>
+		</div>
+	</div>
+	<legend>Liste des alertes unitaires</legend>
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Référence</th>
+					<th>Location</th>
+					<th>Type</th>
+					<th>  </th>
+					<th>Valeur</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="cu in allCU | orderBy : '-_id'">
+					<td>{{cu._id}}</td>
+					<td>{{cu.ref}}</td>
+					<td>{{sensorLocation(cu.ref)}}</td>
+					<td><img ng-src="img/{{sensorType(cu.ref)}}.png" style="width:25px; height:25px;"/></td>
+					<td>{{cu.op}}</td>
+					<td>{{cu.value}}</td>
+					<td><button class="btn btn-danger" ng-click="deleteCU(cu._id)">Supprimer</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<legend>Liste des alertes composées</legend>
+	<div class="table-responsive">
+		<form name="addCCNameForm" class="form-horizontal" ng-submit="addCCNameForm.$valid && alertCtrl.addCC(alertCtrl.alert)">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Valeur</th>
+						<th>Nom</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="cc in allCC | orderBy : '-_id'">
+						<td>{{cc._id}}</td>
+						<td>{{cc.ref}}</td>
+						<!--<td>{{cc._id}}</td>!-->
+						<td ng-show="">{{cc.name}}</td>
+						<td ng-hide="{{cc.name}}"></td>
+						<td><input ng-model="ccname" ng-keypress="($event.which === 13)?modifyNameCC(cc._id, ccname):null" type="text" class="form-inline" id="inputName" placeholder="{{cc._id}} ou Nom de la condition"></td>
+						<td><button class="btn btn-info" ng-click="modifyNameCC(cc._id, ccname)">Ajouter Nom</button></td>
+						<td><button class="btn btn-danger" ng-click="deleteCC(cc._id)">x</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+	<legend>
+			</br>
+	</legend>
 </div>

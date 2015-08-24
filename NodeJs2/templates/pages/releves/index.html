@@ -1,53 +1,111 @@
 <div>
 	<h3><strong>Relevés</strong></h3>
-	<div ng-controller="FlotChartDemoCtrl">
-		<div class="panel panel-default">
-			<div class="panel-heading font-bold">
-				<form name="statementForm" class="form-horizontal" ng-submit="FlotChartDemoCtrl.sendSensor()">
-					<div class="form-group">						
-						<div class="col-xs-9 col-sm-5">
-							<label for="inputType" class="control-label">Selectionner un capteur : </label>
-							<select ng-model="FlotChartDemoCtrl.idSensor" class="form-control" id="inputType">
-								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
-							</select>
-							<br>
-							<button type="submit" class="btn btn-default">Rafraichir</button>
-						</div>
+	<div ng-controller="GraphCtrl">
+		<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
+			<li ng-class="{'active': modeSelected == 'single'}">
+				<a href ng-click="modeSelected = 'single' ">Simple</a>
+			</li>
+			<li ng-class="{'active': modeSelected == 'multi'}">
+				<a href ng-click="modeSelected = 'multi' ">Multiple</a>
+			</li>
+		</ul>
+		<span ng-show="modeSelected == 'single'">
+			<form name="statementForm" class="form-horizontal font-bold">
+				<div class="form-group">
+					<div class="col-xs-9 col-sm-5">
+						<label for="inputType" class="control-label">Sélectionner un capteur : </label>
+						<select ng-model="selectSensor" class="form-control" id="inputType" ng-change="refreshData()">
+							<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
+						</select>
 					</div>
-				</form>
-			</div>
-			<div class="panel-body">
-				<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
-					<li ng-class="{'active': selected == 'day'}">
-						<a href ng-click="selected = 'day' && refreshData('day')">Jour</a>
-					</li>
-					<li ng-class="{'active': selected == 'week'}">
-						<a href ng-click="selected = 'week' && refreshData('week')">Semaine</a>
-					</li>
-					<li ng-class="{'active': selected == 'month'}">
-						<a href ng-click="selected = 'month' && refreshData('month')">Mois</a>
-					</li>
-				</ul>
-				<div ui-jq="plot" ui-refresh="d" ui-options="
-					[
-					{ data: {{d}}, points: { show: true, radius: 6}, splines: { show: true, tension: 0.45, lineWidth: 5, fill: 0 } }
-					],
-					{
-					colors: ['blue'],
-					series: { shadowSize: 3 },
-					xaxis:{
-					font: { color: '#ccc' },
-					position: 'bottom',
-					ticks: [{{axisAbs}}]
-					},
-					yaxis:{ font: { color: '#ccc' } },
-					grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#ccc' },
-					tooltip: true,
-					tooltipOpts: { content: '%x is %y.4',  defaultTheme: false, shifts: { x: 0, y: 20 } }
-					}
-					" style="height:240px" >
 				</div>
-			</div>
-		</div>
+			</form>
+			<table ng-show="selectSensor">
+				<tbody class="text-center">
+					<tr >
+						<td>
+							<a class="btn btn-link" ng-click="navDecrease()"><span class="glyphicon glyphicon-chevron-left"></span></a>
+						</td>
+						<td class="form-group" style="width:150px; height:20px;">
+							<h4><span>{{navDate}}</span></h4>
+						</td>
+						<td>
+							<a class="btn btn-link" ng-click="navIncrease()"><span class="glyphicon glyphicon-chevron-right"></span></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<nvd3-line-chart
+			data="dataGraph"
+			width="600"
+			height="350"
+			showXAxis="true"
+			showYAxis="true"
+			xAxisTickFormat="xAxisTickFormatFunction()"
+			interactive="true"
+			interpolate="step-after"
+			isArea="true"
+			useInteractiveGuideLine="true"
+			noData="No data">
+			</nvd3-line-chart>
+		</span>
+		<span ng-show="modeSelected == 'multi'">
+			<form name="statementForm" class="form-horizontal font-bold">
+				<div class="form-group">
+					<div class="col-xs-9 col-sm-5">
+						<label for="inputType" class="control-label">Selectionner un type : </label>
+						<select ng-model="selectType" class="form-control" id="inputType" ng-change="refreshMultiData()">
+							<!-- <option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option> -->
+							<option value="Temperature">Température</option>
+							<option value="Luminance">Luminance</option>
+							<option value="Humidity">Humidité</option>
+						</select>
+					</div>
+				</div>
+			</form>
+			<table ng-show="selectType">
+				<tbody class="text-center">
+					<tr >
+						<td>
+							<a class="btn btn-link" ng-click="navDecrease1()"><span class="glyphicon glyphicon-chevron-left"></span></a>
+						</td>
+						<td class="form-group" style="width:150px; height:20px;">
+							<h4><span>{{navDate1}}</span></h4>
+						</td>
+						<td>
+							<a class="btn btn-link" ng-click="navIncrease1()"><span class="glyphicon glyphicon-chevron-right"></span></a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<nvd3-line-chart
+			data="dataMultiGraph"
+			width="600"
+			height="350"
+			showXAxis="true"
+			showYAxis="true"
+			xAxisTickFormat="xAxisTickFormatFunction()"
+			interactive="true"
+			interpolate="basis"
+			isArea="true"
+			showLegend="true"
+			useInteractiveGuideLine="true"
+			noData="No data">
+			</nvd3-line-chart>
+		</span>
+
+		<button class="btn btn-default" ng-csv="getArray" filename="{{filename}}.csv" field-separator="{{separator}}" decimal-separator="{{decimalSeparator}}"
+		>Export to CSV</button>
+
+		<button class="btn btn-default" ng-csv="getArray" csv-header="getHeader()" filename="{{filename}}.csv" field-separator="{{separator}}" decimal-separator="{{decimalSeparator}}">Export to CSV with header</button>
+
+		<button class="btn btn-default" ng-csv="getArray" filename="{{filename}}.csv" field-separator="{{separator}}" decimal-separator="{{decimalSeparator}}" add-bom="true">With BOM</button> 
+		<legend>
+			</br>
+		</legend>
 	</div>
 </div>
+
+
+<!--	<button class="btn btn-default" ng-csv="getArray" csv-header="getHeader()" filename="{{filename}}" field-separator="{{separator}}" decimal-separator="{{decimalSeparator}}" ng-click="clickFn()">Export with ng-click</button>
+!-->

@@ -1,7 +1,0 @@
--Bouton lancant le Scan
--Section par type ( Temperature, Luminance, Battery, humidity, Sensor)
--Affichage Temps réel (socket.io)
-
-fonctionnalité
--récuperer les valeurs
--les afficher par catégorie
