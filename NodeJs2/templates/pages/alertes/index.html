@@ -1,4 +1,5 @@
 <div ng-controller="AlertController as alertCtrl">
+<<<<<<< HEAD
 	<h3><strong>Alertes</strong></h3> 
 	<input type="checkbox" ng-click="switchoption" ng-model="state" data-label-width="10" data-size="small" data-on-text="Régulière" data-off-text="Silencieuse"  bootstrap-switch tooltip="Régularité alerte"/>{{state}}
 	<div class="panel panel-default col-md-7 col-xs-7 col-sm-7 table-responsive">
@@ -177,4 +178,84 @@
 	<legend>
 			</br>
 	</legend>
+=======
+	<h3><strong>Alertes</strong></h3>
+	<div class="wrapper-md">
+		<tabset class="tab-container" ng-init="steps={step1:true, step2:false, step3:false}">
+		<tab heading="Step 1" active="steps.step1">
+		<form name="step1" class="form-validation">
+			<table>
+				<tbody class="text-center">
+					<tr>
+						<td></td>
+						<td>
+							<a class="btn btn-link" ng-click="descrease()"><span class="glyphicon glyphicon-chevron-up"></span></a>
+						</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr >
+						<td>
+							<button style="width:80px; height:80px; border-radius: 5px 0 0 5px;" type="button" class="btn btn-default" ng-init="sensorShow=false" ng-click="sensorShow=!sensorShow">Capteur</button>
+						</td>
+						<td class="form-group">
+							<input ng-value="comparator[count]" style="width:40px; height:80px;" type="text" class="form-control" required>
+						</td>
+						<td>
+							<input style="width:80px; height:80px; border-radius: 0 5px 5px 0;" type="text" class="form-control" placeholder="Valeur" required></input>
+						</td>
+						<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						<td>
+							<button type="submit" class="btn btn-primary btn-rounded"><i class="fa fa-arrow-right" ng-click="steps.step2=true"></i></button>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<a class="btn btn-link" ng-click="increase()"><span class="glyphicon glyphicon-chevron-down"></span></a>
+						</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div ng-show="sensorShow" class="panel b-a bg-light lt" style="width:70%;">
+				<div class="panel-body pos-rlt b-light">
+					<span class="arrow arrow-light top"></span>
+					<div class="input-group" style="margin-bottom:10px;">
+						<input ng-model="searchSensor.location" type="text" class="form-control input-sm btn-rounded" placeholder="Rentrer une salle">
+						<span class="input-group-addon sm rounded">
+							<i class="glyphicon glyphicon-search"></i>
+						</span>
+					</div>
+					<div ng-repeat="sensor in storeCtrl.sensors | orderBy:'location' | filter:searchSensor ">
+						<div class="panel panel-default" style="float:left; margin-right:10px;">
+							<div class="panel-body">
+								<div class="cc-selector">
+									<input id="{{sensor._id}}" type="radio" name="list-sensor" value="{{sensor._id}}" required/>
+									<label class="drinkcard-cc" for="{{sensor._id}}"><img ng-src="img/{{sensor.type}}.png"/></label>
+								</div>
+							</div>
+							<div class="panel-footer text-center">{{sensor.location}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		</tab>
+		<tab heading="Step 2" disabled="step1.$invalid" active="steps.step2">
+	<form name="step2" class="form-validation"></form>
+	</tab>
+	<tab heading="Step 3" disabled="step2.$invalid" active="steps.step3">
+	<form name="step3" class="form-validation">
+		
+	</form>
+	</tab>
+	</tabset>
+</div>
+>>>>>>> origin/master
 </div>

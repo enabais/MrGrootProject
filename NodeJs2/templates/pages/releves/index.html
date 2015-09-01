@@ -1,6 +1,7 @@
 <div>
 	<h3><strong>Relevés</strong></h3>
 	<div ng-controller="GraphCtrl">
+<<<<<<< HEAD
 		<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
 			<li ng-class="{'active': modeSelected == 'single'}">
 				<a href ng-click="modeSelected = 'single' ">Simple</a>
@@ -109,3 +110,68 @@
 
 <!--	<button class="btn btn-default" ng-csv="getArray" csv-header="getHeader()" filename="{{filename}}" field-separator="{{separator}}" decimal-separator="{{decimalSeparator}}" ng-click="clickFn()">Export with ng-click</button>
 !-->
+=======
+		<div class="panel panel-default">
+			<div class="panel-heading font-bold">
+				<form name="statementForm" class="form-horizontal">
+					<div class="form-group">
+						<div class="col-xs-9 col-sm-5">
+							<label for="inputType" class="control-label">Selectionner un capteur : </label>
+							<select ng-model="selectSensor" class="form-control" id="inputType" ng-change="refreshData()">
+								<option ng-repeat="sensor in storeCtrl.sensors" value="{{sensor._id}}">{{sensor.name}}</option>
+							</select>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="panel-body">
+				<ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
+					<li ng-class="{'active': selected == 'day'}">
+						<a href ng-click="selected = 'day' && refreshData()">Jour</a>
+					</li>
+					<li ng-class="{'active': selected == 'week'}">
+						<a href ng-click="selected = 'week' && refreshData()">Semaine</a>
+					</li>
+					<li ng-class="{'active': selected == 'month'}">
+						<a href ng-click="selected = 'month' && refreshData()">Mois</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="panel-body">
+				<!--clipVoronoi="true"
+			        tooltips="true"-->
+				<nvd3-line-chart
+			        data="dataGraph"
+			        width="800"
+		    		height="600"
+			        showXAxis="true"
+			        showYAxis="true"
+  					xAxisTickFormat="xAxisTickFormatFunction()"
+			        interactive="true"
+			        interpolate="step-after"
+			        isArea="true"
+			        useInteractiveGuideLine="true"
+			        noData="No data">
+			    </nvd3-line-chart>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- <div ng-controller="ExampleCtrl">
+	<div>{{dataGraph}}aaaaaaaaaaaaaa</div>
+    <nvd3-line-chart
+        data="dataGraph"
+        width="600"
+		height="350"
+        showXAxis="true"
+        showYAxis="true"
+        interactive="true"
+        interpolate="basis"
+        xAxisTickFormat="xAxisTickFormatFunction()"
+        useInteractiveGuideLine="true"
+        noData="No data">
+    </nvd3-line-chart>
+</div> -->
+>>>>>>> origin/master

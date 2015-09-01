@@ -823,7 +823,11 @@ body {
   display: table-cell;
   float: none;
   height: 100%;
+<<<<<<< HEAD
   /*vertical-align: top;*/
+=======
+  vertical-align: top;
+>>>>>>> origin/master
 }
 
 .v-middle {

@@ -38,6 +38,7 @@ app.get('/statement', function(req, res) {
         mongoose.listStatement(function(err, statement) {
                 res.json(statement);
         });
+<<<<<<< HEAD
 });
 
 /*récupération des releves par rapport à un id dans la bdd*/
@@ -86,6 +87,17 @@ app.get('/mainSensor', function(req, res) {
         });
 });
 
+=======
+});
+
+/*récupération des capteurs dans la bdd*/
+app.get('/mainSensor', function(req, res) {
+        mongoose.listMainSensor(function(err, msensors) {
+                res.json(msensors);
+        });
+});
+
+>>>>>>> origin/master
 /*association des capteurs aux rooms*/
 app.post('/associate', function(req, res) {
         mongoose.association(req.body.idRoom, req.body.idSensor);
@@ -124,9 +136,15 @@ app.get('/listcu', function(req, res) {
         });
 });
 
+<<<<<<< HEAD
 /*ajout des cc*/
 app.post('/cc', function(req, res) {
         mongoose.addCC(req.body.name, req.body.description);
+=======
+/*modification des cc*/
+app.post('/modifycc', function(req, res) {
+        mongoose.modifyNameCC(req.body.name, req.body.id);
+>>>>>>> origin/master
 });
 
 /*suppression des cc*/
@@ -143,11 +161,16 @@ app.get('/listcc', function(req, res) {
 
 /*récupération des notifications*/
 app.get('/notif', function(req, res) {
+<<<<<<< HEAD
         mongoose.listAlert(function(err, notif) {
+=======
+        mongoose.listNotif(function(err, notif) {
+>>>>>>> origin/master
                 res.json(notif);
         });
 });
 
+<<<<<<< HEAD
 /*recuperation du nbe de notifs*/
 app.get('/nbenotif', function(req, res) {
         mongoose.listData(function(err, mydata) {
@@ -175,5 +198,7 @@ app.post('/switchoption', function(req, res) {
         mongoose.switchOption(req.body.option);
 })
 
+=======
+>>>>>>> origin/master
 server.listen(8080);
 mongoose.connect();
